@@ -19,7 +19,7 @@ interface ProductPageProps {
     initialProduct?: Product;
 }
 
-export const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
+const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
     const params = useParams<{ id: string }>();
     const id = params?.id;
     const router = useRouter();
@@ -191,3 +191,4 @@ export const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
         </main>
     );
 };
+export default ProductPage;

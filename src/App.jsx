@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MainPage } from './pages/main/MainPage';
-import { ProductPage } from './pages/productPage/ProductPage';
+import  ProductPage from './pages/productPage/ProductPage';
 import { Footer } from './widgets/footer/Footer';
 import { HeaderComponent } from './widgets/header/HeaderComponent';
 import './App.css';
