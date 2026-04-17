@@ -19,11 +19,9 @@ export function YandexMetrika({ counterId }: YandexMetrikaProps) {
   const searchParams = useSearchParams();
 
  useEffect(() => {
-    // next/navigation searchParams возвращает ReadonlyURLSearchParams | null
     const paramsString = searchParams ? searchParams.toString() : '';
     const url = pathname + (paramsString ? `?${paramsString}` : '');
     
-    // Проверяем, существует ли метод ym, перед вызовом
     if (typeof window !== 'undefined' && window.ym) {
       window.ym(counterId, 'hit', url);
     }
