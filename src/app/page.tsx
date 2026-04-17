@@ -1,4 +1,4 @@
-import { MainPage } from "@/pages/main/MainPage";
+import { MainPage } from "@/pageComponents/main/MainPage";
 import { getGoods } from "@/entities/product/api/getGoods";
 import { Metadata } from "next";
 

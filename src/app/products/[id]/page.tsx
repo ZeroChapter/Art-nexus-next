@@ -1,5 +1,5 @@
 import { Product } from "@/entities/product/model/type";
-import ProductPage from "@/pages/productPage/ProductPage";
+import ProductPage from "@/pageComponents/productPage/ProductPage";
 import { SERVER_URL } from "@/shared/serverConfig";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";

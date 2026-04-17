@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { MainPage } from './pages/main/MainPage';
-import  ProductPage from './pages/productPage/ProductPage';
+import { MainPage } from './pageComponents/main/MainPage';
+import  ProductPage from './pageComponents/productPage/ProductPage';
 import { Footer } from './widgets/footer/Footer';
 import { HeaderComponent } from './widgets/header/HeaderComponent';
 import './App.css';
 import { AppContextProvider } from './shared/AppContextProvider';
-import { About } from './pages/informationPages/About';
-import { Return } from './pages/informationPages/Return';
-import { Delivery } from './pages/informationPages/Delivery';
-import { Payment } from './pages/informationPages/Payment'
+import { About } from './pageComponents/informationPages/About';
+import { Return } from './pageComponents/informationPages/Return';
+import { Delivery } from './pageComponents/informationPages/Delivery';
+import { Payment } from './pageComponents/informationPages/Payment'
 import { HeaderMobile } from './widgets/headerMobile/HeaderMobile';
-import { DevelopmentPage } from './pages/developmentPage/DevelopmentPage';
+import { DevelopmentPage } from './pageComponents/developmentPage/DevelopmentPage';
 
 function App() {
   return (
