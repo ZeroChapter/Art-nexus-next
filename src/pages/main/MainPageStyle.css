@@ -1,0 +1,40 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.catalog_title {
+   
+    margin: auto;
+    padding: 40px;
+
+    h1 {
+            letter-spacing: 2px;
+            text-align: center;
+            font-size: var(--size-20);
+            font-weight: 600;
+        }
+}
+
+.catalog {
+    display: grid;
+    max-width: 1040px;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+    row-gap: 40px;
+    padding: 20px;
+    padding-bottom: 80px;
+}
+
+@media (max-width: 768px) {
+    .catalog {
+        grid-template-columns: repeat(2, 1fr); 
+        row-gap: 20px;
+        padding-bottom: 80px;
+    }
+    .page {
+        margin-top: 0;
+    }
+}

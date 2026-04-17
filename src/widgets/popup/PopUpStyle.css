@@ -1,0 +1,129 @@
+.overlay {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.5;
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: all 1s ease-in-out;
+}
+
+.content_window {
+    background-color: white;
+    color: black;
+    padding: 40px 40px;
+    padding-top: 20px;
+    max-height: 90vh;
+    z-index: 150;
+    position: fixed;
+    top: 50%;
+    left: 50%; 
+    max-width: 600px;
+    transform: translate(-50%, -50%); 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); 
+    animation: popupShow 0.4s ease-out forwards;
+
+    display: flex;          
+    flex-direction: column; 
+    overflow: hidden;
+
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+}
+
+.window-close {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 50px;
+    align-items: center;
+    justify-content: end;
+}
+
+.cross {
+    background-color: rgb(255, 255, 255);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain; 
+    width: 16px; 
+    height: 16px;
+    border: none;
+    cursor: pointer;
+    fill: black;
+
+    margin: -35px -25px 0 0;
+}
+
+.pop-up-content {
+   flex: 1; 
+    overflow-y: auto; 
+    min-height: 0;
+}
+
+.cross:hover {
+    fill: var( --accent-color);
+}
+
+.pop-up-content::-webkit-scrollbar {
+    display: none;
+}
+
+@keyframes popupShow {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes popupHide {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+}
+
+@media (max-width: 768px) {
+    .content_window {
+        padding: 20px;
+        max-width: 100%; 
+        width: 100%;
+        top: auto;
+        bottom: 0;
+        transform: translate(-50%, 0);
+    }
+    .cross {
+        margin: 0;
+    }
+
+    @keyframes popupHide {
+        from {
+            opacity: 1;
+            height: auto;
+        }
+        to {
+            opacity: 0;
+            height: 10px;
+        }   
+    }
+
+    @keyframes popupShow {
+        from {
+            opacity: 0;
+            transform: translate(-50%, 100%); 
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0); 
+        }
+    }
+} 

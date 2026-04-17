@@ -1,0 +1,121 @@
+.content {
+    padding: 60px 0;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: auto;
+    max-width: 1200px;
+    align-items: stretch;
+}
+
+.more-margin {
+    padding: 100px 0; 
+}
+
+.void {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
+    box-sizing: border-box;
+}
+
+.about-omage {
+    max-width: 577px;
+    max-height: 629px;
+    width: 100%;
+    height: auto;
+    margin-left: calc(-50vw + 100%);
+    display: block;
+}
+
+.information_block {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+.arrow_button {
+    border: none;
+    background: none;
+    margin-bottom: 25px;
+    fill: currentColor;
+    color: black;
+    align-self: start;
+}
+
+.arrow_button:hover {
+    cursor: pointer;
+    color: var( --accent-color);
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    
+    h1 {
+        font-size: 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    p {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 140%;
+    }
+}
+
+.slogan {
+    font-size: var(--size-25);
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 60px 0;
+
+    span {
+       font-weight: 600;
+    }
+}
+
+.left-more {
+    margin: 0;
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        align-items: center; /* Центрируем всё */
+    }
+
+    .void {
+        width: 100%; 
+        padding: 0 20px;
+        order: 2;
+        margin-top: 40px;
+        display: block;
+        flex: none; 
+    }
+
+    .information_block {
+        width: 100%;
+        padding: 0 20px;
+        order: 1;
+        box-sizing: border-box;
+    }
+
+    .about-omage {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+        height: auto;
+        display: block;
+        max-width: 100%;
+        min-height: 200px;
+    }
+}

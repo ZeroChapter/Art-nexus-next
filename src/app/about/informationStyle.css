@@ -1,0 +1,102 @@
+.content {
+    padding: 60px 0;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: auto;
+    max-width: 1200px;
+    align-items: stretch;
+}
+
+.void {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
+    box-sizing: border-box;
+}
+
+.about-omage {
+    max-width: 577px;
+    max-height: 629px;
+    width: 100%;
+    height: auto;
+    margin-left: calc(-50vw + 100%);
+    display: block;
+}
+
+.information_block {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+/* Скрываем мобильные элементы на десктопе */
+.mobile-only {
+    display: none;
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    
+    h1 {
+        font-size: 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    p {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 140%;
+    }
+}
+
+.slogan {
+    font-size: var(--size-25);
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 60px 0;
+
+    span {
+       font-weight: 600;
+    }
+}
+
+/* Мобильная версия */
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        padding: 40px 0;
+    }
+
+    /* Скрываем десктопную картинку */
+    .desktop-only {
+        display: none;
+    }
+
+    /* Показываем мобильную */
+    .mobile-only {
+        display: block;
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    .about-omage-mobile {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .information_block {
+        width: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+}

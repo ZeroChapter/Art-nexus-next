@@ -1,0 +1,46 @@
+.carousel-wrapper {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+    margin: 10px 0;
+}
+
+.carousel-container {
+    display: flex;
+    height: 400px;
+    gap: 5px;
+    width: max-content;
+    will-change: transform;
+    touch-action: none;
+    cursor: grab;
+}
+
+.carousel-container:active {
+    cursor: grabbing;
+}
+
+@media (max-width: 768px) {
+    .carousel-container {
+        height: 300px;
+    }
+
+    .carousel-wrapper {
+        height: 300px;
+    }
+}
+
+.carousel-image {
+    height: 400px;
+    width: auto;
+    flex-shrink: 0;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+@media (max-width: 768px) {
+    .carousel-image {
+        height: 300px;
+    }
+}

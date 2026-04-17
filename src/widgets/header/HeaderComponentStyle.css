@@ -1,0 +1,142 @@
+.big_head {
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
+    top: 0;
+    transition: all 0.3s ease;
+    z-index: 90;
+}
+
+.content-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1040px;
+    margin: auto;
+    padding-top: 20px; 
+}
+
+.header-up {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; 
+    align-items: center;
+    padding: 0 20px;
+}
+
+.a {
+    text-decoration: none; 
+    color: inherit;
+    font-weight: 500;
+    letter-spacing: 2px;
+    font-size: var(--size-12);
+    padding: 5px 0; 
+}
+
+.logo {
+    justify-self: center;
+    grid-column: 2;
+    letter-spacing: 1px;
+    font-weight: 700;
+    padding: 0;
+    margin: 0; 
+    font-size: var(--size-25);
+    
+}
+
+.logo:hover {
+    cursor: pointer;
+}
+
+.header-up_right {
+    justify-self: end;
+    grid-column: 3;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: flex-start; 
+}
+
+.header-up_right_phone {
+    font-size: var(--size-14);
+    font-weight: 500;
+    margin-top: 0; 
+}
+
+.basket-icon {
+    margin-top: -5px;
+}
+
+.main-navigation {
+    margin: 20px 0 18px 0; 
+    padding: 0;
+    width: 100%;
+}
+
+ul {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    list-style: none; 
+    padding: 0;       
+    margin: 0; 
+    justify-content: center; 
+}
+
+.scrolled {
+     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+     padding-top: 15px;
+}
+
+.main-navigation li {
+    position: relative;
+    display: inline-block;
+}
+
+.main-navigation li::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    left: 0;
+    bottom: -5px; 
+    background-color: var( --accent-color);
+    transition: width 0.3s ease;
+}
+
+.main-navigation li:hover::after {
+    width: 100%; 
+}
+
+.basket {
+    position: relative;
+    transition: all 0.1s ease-in-out;
+    border: none;
+    background-color: rgba(240, 248, 255, 0);
+    width: 25px;
+}
+
+.basket:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: all 0.1s ease-in-out;
+}
+
+.basket-counter {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+
+    background-color: var( --accent-color);
+    color: rgb(255, 255, 255);
+
+    font-size: 14x;
+
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+

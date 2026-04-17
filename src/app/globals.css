@@ -1,0 +1,117 @@
+:root {
+  --accent-color: #0B0B0B;
+
+  --size-10: 10px;
+  --size-11: 11px;
+  --size-12: 12px;
+  --size-14: 14px;
+  --size-20: 20px;
+  --size-25: 25px;
+  
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.desktop-header {
+  display: block;
+}
+
+.mobile-header {
+  display: none;
+}
+
+.headers-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-content-wrapper {
+    margin-top: 120px; 
+    min-height: calc(100vh - 120px);
+}
+
+.content-container {
+    flex: 1;
+    overflow-y: hidden;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+    min-height: calc(100vh - 160px);
+    min-width: 100%; 
+}
+
+@media (max-width: 768px) {
+  .desktop-header {
+    display: none;
+  }
+  
+  .mobile-header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .content-container {
+    padding: 0;
+  }
+
+  .app-content-wrapper {
+    /* плотнее к .mobile-header: высота ряда ~55px, без лишнего зазора */
+    margin-top: 48px;
+    min-height: calc(100vh - 48px);
+  }
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/assets/fonts/GraphikLCG-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/assets/fonts/GraphikLCG-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/assets/fonts/GraphikLCG-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/assets/fonts/GraphikLCG-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.page {
+  color: #0B0B0B;
+}
+
+body {
+  font-family: 'Graphik', sans-serif;
+  margin: auto;
+  padding: 0;
+}
+h1 {
+  font-weight: 700;
+}
+h2 {
+  font-weight: 600;
+}
+
