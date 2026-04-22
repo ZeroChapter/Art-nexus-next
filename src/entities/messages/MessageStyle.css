@@ -1,7 +1,7 @@
 .content_block {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     max-width: 500px;
 }
 
@@ -9,6 +9,7 @@
     font-size: var(--size-25);
     text-transform: uppercase;
     font-weight: 500;
+    margin-bottom: 2;
 }
 
 .content_block h2 {
@@ -65,4 +66,14 @@
     font-size: var(--size-12);
     font-weight: 500;
     margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+
+    #big_text {
+        text-transform: uppercase;
+        font-size: var(--size-12);
+        font-weight: 500;
+        line-height: 140%;
+    }
 }

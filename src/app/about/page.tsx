@@ -15,7 +15,7 @@ export default function AboutPage() {
                 </div>
 
                 <section className="information_block">
-                    <article className="block">
+                    <article className="page-information-block">
                         <h1>О ЧЕМ ГОВОРИТ БРЕНД</h1>
                         <p>
                             Art Nexus: Связь. Свобода. Искусство. Есть вещи, которые становятся продолжением тебя. Оболочкой, в которой мир видится чётче, а шаги — легче.
@@ -46,7 +46,7 @@ export default function AboutPage() {
                         className="about-omage-mobile" />
                     </div>
 
-                    <article className="block">
+                    <article className="page-information-block">
                         <h1>О СОЗДАТЕЛЯХ</h1>
                         <p>
                             Art Nexus: связь в самом сердце

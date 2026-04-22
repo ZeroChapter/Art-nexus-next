@@ -43,6 +43,11 @@ button {
     font-weight: 400;
 }
 
+.mobile-visible {
+    display: none;
+    visibility: hidden;
+}
+
 .right_block {
     grid-column: 2;
     align-self: start; 
@@ -161,6 +166,7 @@ button {
     gap: 20px;
     text-transform: uppercase;
     margin-top: 60px;
+    margin-bottom: 20px;
 }
 
 .description_block-title a,
@@ -258,6 +264,11 @@ button {
     margin: auto;
 }
 
+.name_block h1 {
+    font-weight: 500;
+    margin: 0;
+}
+
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -327,6 +338,7 @@ button {
         box-sizing: border-box;
     }
     .description_block {
+        margin-top: 40px;
         display: flex;
         flex-direction: column;
     }
@@ -376,4 +388,19 @@ button {
     font-size: 8px;
     line-height: 9px;
 }
+.name_block{
+    margin: 15px 0;
+}
+
+.product-price {
+    margin: 0;
+}
+
+.recomendation-title {
+    align-self: center; 
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: -10px;
+}
+
 }

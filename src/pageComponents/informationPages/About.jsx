@@ -12,7 +12,7 @@ export const About = () => {
                 <img src="https://i.pinimg.com/736x/d0/22/ce/d022ce6156ae0313d899aefe0a6c5b79.jpg" alt="Фотография" className="about-omage" />
             </div>
             <section className="information_block">
-                <article className="block">
+                <article className="page-information-block">
                     <h1>О ЧЕМ ГОВОРИТ БРЕНД</h1>
                     <p>
                         Art Nexus: Связь. Свобода. Искусство. Есть вещи, которые становятся продолжением тебя. Оболочкой, в которой мир видится чётче, а шаги — легче.
@@ -37,7 +37,7 @@ export const About = () => {
                     
                 </article>
 
-                <article className="block">
+                <article className="page-information-block">
                     <h1>О СОЗДАТЕЛЯХ</h1>
                     <p>
                         Art Nexus: связь в самом сердце

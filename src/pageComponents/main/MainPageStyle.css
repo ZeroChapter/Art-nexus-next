@@ -37,4 +37,17 @@
     .page {
         margin-top: 0;
     }
+    .catalog_title {
+   
+        margin: auto;
+        padding: 40px;
+    
+        h1 {
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                text-align: center;
+                font-size: var(--size-20);
+                font-weight: 500;
+            }
+    }
 }

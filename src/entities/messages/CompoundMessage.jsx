@@ -23,7 +23,7 @@ export const CompoundMessage = ({prop}) => {
                 <h2>Руководство по уходу за одеждой</h2>
             </div>
             <ul className="care_list">
-                {care.map((item) => (<li>{item}</li>))}
+                {care.map((item, index) => (<li key={index}>{item}</li>))}
             </ul>
         </div>
     )

@@ -11,7 +11,7 @@ export default function Return() {
             <div className="void">
             </div>
             <section className="information_block">
-                <article className="block">
+                <article className="page-information-block">
                      <button 
                         className="arrow_button mobile-visible left-more"  
                          onClick={() => router.back()}

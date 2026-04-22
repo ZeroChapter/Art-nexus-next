@@ -10,7 +10,7 @@ export const MobileMenu = ({ isOpen, onClose }) => {
                 <nav className="menu-nav">
                     <li><Link href="/delivery" onClick={onClose}>ДОСТАВКА</Link></li>
                     <li><Link href="/payment" onClick={onClose}>ОПЛАТА</Link></li>
-                    <li><Link href="/return" onClick={onClose}>ОПЛАТА</Link></li>
+                    <li><Link href="/return" onClick={onClose}>ВОЗВРАТ</Link></li>
                     <li><Link href="/about" onClick={onClose}>О НАС</Link></li>
                 </nav>
             </div>

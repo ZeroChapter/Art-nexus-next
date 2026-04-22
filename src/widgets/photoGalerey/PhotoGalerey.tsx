@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import './PhotoGalereyStyle.css';
 import DotIcon from "@/shared/tsxIcons/DotIcon";
+import { PopUp } from "@/widgets/popup/PopUp";
 
 interface PhotoGalereyProps {
     images?: string[];
@@ -10,6 +11,7 @@ interface PhotoGalereyProps {
 
 export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [lightboxOpen, setLightboxOpen] = useState(false);
     
     // ЭФФЕКТ УДАЛЕН. Индекс теперь сбрасывается через key в родителе.
     
@@ -19,7 +21,26 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
 
     return (
         <div className="galerey">
-            <div className="main_image">
+            <PopUp
+                variant="lightbox"
+                popUpController={lightboxOpen}
+                onClose={() => setLightboxOpen(false)}
+            >
+                <img src={images[currentIndex]} alt="" />
+            </PopUp>
+            <div
+                className="main_image"
+                role="button"
+                tabIndex={0}
+                onClick={() => setLightboxOpen(true)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setLightboxOpen(true);
+                    }
+                }}
+                aria-label="Открыть фото на весь экран"
+            >
                 <img src={images[currentIndex]} alt="Main product" />
             </div>
             

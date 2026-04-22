@@ -145,15 +145,15 @@ export const Bascket = () => {
                         <div className="form__block">
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group">
-                                    <input name='name' type="text" id="name" className='inputForm' required />
+                                    <input name='name' type="text" id="name" className='inputForm' placeholder=" " autoComplete="name" required />
                                     <label htmlFor="name" className='inputLabel'>ФИО</label>
                                 </div>
                                 <div className="form-group">
-                                    <input name='phone' type="tel" id="number" value={phone} onChange={handlePhoneChange} maxLength={18} className='inputForm' required />
+                                    <input name='phone' type="tel" id="number" value={phone} onChange={handlePhoneChange} maxLength={18} className='inputForm' placeholder=" " autoComplete="tel" required />
                                     <label htmlFor="number" className='inputLabel'>НОМЕР ТЕЛЕФОНА</label>
                                 </div>
                                 <div className="form-group">
-                                    <input type="email" id="email" name="email" className='inputForm' required />
+                                    <input type="email" id="email" name="email" className='inputForm' placeholder=" " autoComplete="email" required />
                                     <label htmlFor="email" className='inputLabel'>E-MAIL</label>
                                 </div>
                                 <div className="form-group">
@@ -162,12 +162,16 @@ export const Bascket = () => {
                                 </div>
                                 <div className="radio-button_group">
                                     <div className='radio-lable_group'>
-                                        <input type="radio" id="rdelivery-cdek" name="radio" className='radio_button' value="cdek" checked={delivery === 'cdek'} onChange={handleDeliveryChenge} />
-                                        <label htmlFor="rdelivery-cdek" className="radio-label">СДЕК</label>
+                                        <input type="radio" id="delivery-cdek" name="radio" className='radio_button' value="cdek" checked={delivery === 'cdek'} onChange={handleDeliveryChenge} />
+                                        <label htmlFor="delivery-cdek" className="radio-label">СДЕК</label>
                                     </div>
                                     <div className='radio-lable_group'>
-                                        <input type="radio" id="elivery-yandex" name="radio" className='radio_button' value="yandex" checked={delivery === 'yandex'} onChange={handleDeliveryChenge} />
-                                        <label htmlFor="elivery-yandex" className="radio-label">Яндекс GO</label>
+                                        <input type="radio" id="delivery-yandex" name="radio" className='radio_button' value="yandex" checked={delivery === 'yandex'} onChange={handleDeliveryChenge} />
+                                        <label htmlFor="delivery-yandex" className="radio-label">Яндекс GO</label>
+                                    </div>
+                                    <div className='radio-lable_group'>
+                                        <input type="radio" id="delivery-self" name="radio" className='radio_button' value="self" checked={delivery === 'yandex'} onChange={handleDeliveryChenge} />
+                                        <label htmlFor="delivery-self" className="radio-label">Доставка с примеркой</label>
                                     </div>
                                     <p className='message-box'>
                                         Заявки обрабатываются с 10:00 до 21:00 ежедневно.

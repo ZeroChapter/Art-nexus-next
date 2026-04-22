@@ -6,6 +6,12 @@
 .main_image {
     width: 577px;
     height: 629px;
+    cursor: zoom-in;
+}
+
+.main_image:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 4px;
 }
 
 .main_image img {
