@@ -2,7 +2,7 @@
 import { PhotoCarousel } from "../../widgets/carusel/PhotoCarousel";
 import './MainPageStyle.css'
 import { ProductCard } from "../../widgets/productCard/ProductCard";
-// import { useMetaTags } from "../../entities/hooks/useMetaTags";
+import { Baner } from "../../widgets/baners/Baner";
 import { PopUp } from "../../widgets/popup/PopUp";
 import { SizeMessage } from "../../entities/messages/SizeMessage";
 
@@ -12,24 +12,6 @@ export const MainPage = ({ initialProducts }) => {
     const products = initialProducts;
 
 
-    // useMetaTags({
-    //     title: 'ART NEXUS | Эксклюзивная одежда',
-    //     description: 'Магазин уникальной одежды от российских дизайнеров. Премиальное качество, доставка по всей России',
-    //     keywords: 'дизайнерские вещи, уникальные вещи, дизайнерская одежда, российские дизайнеры, женская одежда, скидки, премиальное качество,',
-    //     robots: 'index, follow',
-    //     canonical: 'https://artnexus.ru',
-    //     'og:type': 'website',
-    //     'og:title': 'ART NEXUS | Эксклюзивная одежда',
-    //     'og:description': 'Магазин уникальной одежды от российских дизайнеров',
-    //     'og:image': '/images/collection-preview.jpg',
-    //     'og:url': 'https://artnexus.ru',
-    //     'twitter:card': 'summary_large_image',
-    //     'twitter:title': 'ART NEXUS',
-    //     'twitter:description': 'Эксклюзивная одежда',
-    //     'twitter:image': '/images/collection-preview.jpg',
-    // });
-
-
     return (
         <>
         <main className="page">
@@ -37,6 +19,7 @@ export const MainPage = ({ initialProducts }) => {
             <div className="catalog_title">
                 <h1>коллекция <br/> весна-лето 2026</h1>
             </div>
+            <Baner />
             <div className="catalog">
                 {products.map((product) => {
                     if (product.colors.find(color => color.inStore === 'true')) {
