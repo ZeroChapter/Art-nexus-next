@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next';
 
+const SITE_URL = 'https://art-nexus.ru'
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -8,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: '/sitemap.xml',
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }
 

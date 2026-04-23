@@ -29,9 +29,14 @@
 .video_block iframe {
     border: 0;
     display: block;
-    transform: scale(1.03);
-    transform-origin: center;
     pointer-events: none;
+}
+
+.video_block video {
+    display: block;
+    object-fit: contain;
+    object-position: left center;
+    pointer-events: none; /* запрет паузы/меню */
 }
 
 .baner_text {

@@ -1,4 +1,13 @@
-import React, { useState, useCallback, createContext, useContext, ReactNode } from "react";
+import React, {
+  useState,
+  useCallback,
+  createContext,
+  useContext,
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import { ProductColor, ProductSize } from "@/entities/product/model/type";
 import { PageToast } from "@/shared/ui/pageToast/PageToast";
 
@@ -31,6 +40,34 @@ interface AppContextType {
 
 const Context = createContext<AppContextType | null>(null);
 
+const BASKET_STORAGE_KEY = "art-nexus-basket-v1";
+
+function readBasketFromLocalStorage(): BasketItem[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(BASKET_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return null;
+    return parsed as BasketItem[];
+  } catch {
+    return null;
+  }
+}
+
+function writeBasketToLocalStorage(items: BasketItem[]) {
+  if (typeof window === "undefined") return;
+  try {
+    if (items.length === 0) {
+      window.localStorage.removeItem(BASKET_STORAGE_KEY);
+      return;
+    }
+    window.localStorage.setItem(BASKET_STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    // ignore quota / privacy mode errors
+  }
+}
+
 interface ProviderProps {
   children: ReactNode;
   initialBasket?: BasketItem[];
@@ -61,13 +98,40 @@ export function useAppContext(): AppContextType {
 };
 
 export const useCreateAppContext = (props: BasketItem[]): AppContextType => {
-  const [bascet, setBascet] = useState<BasketItem[]>(props || []);
+  const [bascet, setBascet] = useState<BasketItem[]>(() => props || []);
   const [toast, setToast] = useState<{ name: string; image: string; price: number } | null>(null);
   const [toastId, setToastId] = useState(0);
+  const basketPersistReadyRef = useRef(false);
+  const basketStorageHydratedRef = useRef(false);
  
   const setBascetStore = useCallback((arr: BasketItem[]) => {
     setBascet(arr);
   }, []);
+
+  useLayoutEffect(() => {
+    if (basketStorageHydratedRef.current) return;
+    basketStorageHydratedRef.current = true;
+
+    const stored = readBasketFromLocalStorage();
+    if (stored && stored.length > 0) {
+      const seed = props || [];
+      const sameLength = stored.length === seed.length;
+      const sameJson = sameLength && JSON.stringify(stored) === JSON.stringify(seed);
+      if (!sameJson) {
+        queueMicrotask(() => setBascet(stored));
+      }
+    }
+
+    basketPersistReadyRef.current = true;
+  // Intentionally run once on mount: compare against the initial SSR snapshot (`props` from first render),
+  // then hydrate from localStorage on the client.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!basketPersistReadyRef.current) return;
+    writeBasketToLocalStorage(bascet);
+  }, [bascet]);
 
   const addToBascet = useCallback((product: Omit<BasketItem, 'quantity' | 'uniqueId'>) => {
     setBascet(prevBascet => [

@@ -11,13 +11,15 @@ export const Baner = () => {
     return (
         <div className="baner">
             <div className='video_block'>
-                <iframe 
-                    src="https://kinescope.io/embed/iogz7qkJ2ThZ4MePQbuBkc?autoplay=1&muted=1&loop=1" 
-                    allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" 
-                    allowFullScreen 
-                    className='vodeo-iframe'
-                >
-                </iframe>
+                <video
+                    className="video-baner"
+                    src="/lama.webm"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                />
             </div>
             <div className='baner_text'>
                 <h2 className='baner_text-title'>Доставка с примеркой по Москве</h2>

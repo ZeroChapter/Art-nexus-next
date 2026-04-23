@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import type { Product } from '@/entities/product/model/type';
 import { SERVER_URL } from '@/shared/serverConfig';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
+const SITE_URL = 'https://art-nexus.ru';
 
 async function safeGetProducts(): Promise<Array<{ id: string | number; updatedAt?: string }>> {
   try {
