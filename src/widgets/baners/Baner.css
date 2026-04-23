@@ -15,6 +15,8 @@
 .video_block {
     position: relative;
     overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
 }
 .video_block,
 .video_block iframe,
@@ -34,6 +36,7 @@
 
 .video_block video {
     display: block;
+    max-width: 100%;
     object-fit: contain;
     object-position: left center;
     pointer-events: none; /* запрет паузы/меню */
@@ -83,34 +86,35 @@
 
     .baner {
         flex-direction: column;
-        max-width: 390px;
-        margin: auto;
-        margin-bottom: 30px;
-    }
-
-    .baner_text {
-        margin: 72px 76px 55px 30px;
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        max-width: 519px;
+        /* 20px слева/справа: margin НЕ уменьшает width:100%, поэтому считаем ширину явно */
+        width: calc(100% - 40px);
+        max-width: none;
+        margin: 0 auto 30px;
+        padding: 0;
+        box-sizing: border-box;
+        overflow-x: clip;
     }
 
     .video_block,
     .video_block iframe,
     .video_block video,
     .vodeo-iframe {
-        width: 390px;
-        margin-top: -10px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        height: auto;
+        margin-top: 0;
     }
 
     .baner_text {
-        margin: 10px 20px 30px 20px;
+        margin: 10px 0 30px;
+        max-width: 100%;
+        padding: 10px 20px 0 20px;
     }
 
     .baner_text-title {
         text-transform: uppercase;
-        font-size: 23px;
+        font-size: 22px;
         font-weight: 700;
     }
     

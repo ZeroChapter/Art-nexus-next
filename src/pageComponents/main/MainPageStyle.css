@@ -11,9 +11,10 @@
 
     h1 {
             letter-spacing: 2px;
+            text-transform: uppercase;
             text-align: center;
             font-size: var(--size-20);
-            font-weight: 600;
+            font-weight: 500;
         }
 }
 
