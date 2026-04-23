@@ -1,13 +1,23 @@
 'use client'
 import "@/app/informationStyle.css"
 import { useRouter } from "next/navigation";
+import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
 
 export default function Return() {
 
     const router = useRouter();
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
+    const breadcrumbs = breadcrumbListJsonLd([
+        { name: 'Главная', item: `${siteUrl}/` },
+        { name: 'Возврат и обмен', item: `${siteUrl}/return` },
+    ]);
 
     return (
         <div className="content more-margin">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+            />
             <div className="void">
             </div>
             <section className="information_block">
@@ -19,7 +29,7 @@ export default function Return() {
                     >
                         <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M31 6.70703H2" stroke="black" strokeWidth="2"/>
-                            <path d="M7.94238 0.707032L2 6.64941L7.94238 12.5918" stroke="black" stroke-width="2"/>
+                            <path d="M7.94238 0.707032L2 6.64941L7.94238 12.5918" stroke="black" strokeWidth="2"/>
                         </svg>
                     </button>
                     <h1>Возврат и обмен</h1>

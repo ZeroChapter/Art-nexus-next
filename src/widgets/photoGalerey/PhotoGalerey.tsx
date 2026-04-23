@@ -26,7 +26,7 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
                 popUpController={lightboxOpen}
                 onClose={() => setLightboxOpen(false)}
             >
-                <img src={images[currentIndex]} alt="" />
+                <img src={images[currentIndex]} alt={`Фото товара ${currentIndex + 1}`} />
             </PopUp>
             <div
                 className="main_image"
@@ -41,7 +41,7 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
                 }}
                 aria-label="Открыть фото на весь экран"
             >
-                <img src={images[currentIndex]} alt="Main product" />
+                <img src={images[currentIndex]} alt={`Фото товара ${currentIndex + 1}`} />
             </div>
             
             <div className="galerey-pictures">
@@ -49,7 +49,7 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
                     <div className="miniature" key={index}>
                         <img 
                             src={image} 
-                            alt={`Product view ${index + 1}`}
+                            alt={`Миниатюра фото ${index + 1}`}
                             className={index === currentIndex ? 'active' : ''}
                             onClick={() => setCurrentIndex(index)} 
                         />

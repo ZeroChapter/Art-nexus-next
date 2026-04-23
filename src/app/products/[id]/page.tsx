@@ -3,6 +3,9 @@ import ProductPage from "@/pageComponents/productPage/ProductPage";
 import { SERVER_URL } from "@/shared/serverConfig";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
 
 async function getProduct(id: string) {
   const response = await fetch(`${SERVER_URL}/api/goods`, { cache: 'no-store' });
@@ -19,21 +22,40 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return { title: "Товар не найден | Art Nexus" };
   }
 
+  const url = `${SITE_URL}/products/${id}`;
+  const description = product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
+  const imageUrl = product.image?.[0]?.[0];
+
   return {
     title: `${product.name} | Купить одежду Art Nexus`, 
-    description: product.description || `Описание товара ${product.name} от бренда Art Nexus.`,
+    description,
     keywords: [product.name, 'Art Nexus', 'дизайнерская одежда', 'купить одежду'],
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       title: product.name,
-      description: product.description,
-      images: product.image ? [
-        {
-          url: product.image[0][0], 
-          width: 800,         
-          height: 600,
-          alt: product.name,
-        }
-      ] : [], 
+      description,
+      url,
+      siteName: 'Art Nexus',
+      locale: 'ru_RU',
+      type: 'website',
+      images: imageUrl
+        ? [
+            {
+              url: imageUrl,
+              width: 1200,
+              height: 1200,
+              alt: product.name,
+            },
+          ]
+        : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description,
+      images: imageUrl ? [imageUrl] : [],
     },
   };
 }
@@ -46,5 +68,18 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     notFound();
   }
 
-  return <ProductPage initialProduct={product} />;
+  const breadcrumbs = breadcrumbListJsonLd([
+    { name: 'Главная', item: `${SITE_URL}/` },
+    { name: product.name, item: `${SITE_URL}/products/${id}` },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
+      <ProductPage initialProduct={product} />
+    </>
+  );
 }

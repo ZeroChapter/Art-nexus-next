@@ -1,15 +1,15 @@
-// import React, { useState, useEffect } from "react";
 import { PhotoCarousel } from "../../widgets/carusel/PhotoCarousel";
 import './MainPageStyle.css'
 import { ProductCard } from "../../widgets/productCard/ProductCard";
 import { Baner } from "../../widgets/baners/Baner";
 import { PopUp } from "../../widgets/popup/PopUp";
 import { SizeMessage } from "../../entities/messages/SizeMessage";
+import { Product } from "@/entities/product/model/type";
 
 
-export const MainPage = ({ initialProducts }) => {
+export const MainPage = ({ initialProducts }: { initialProducts: Product[] }) => {
 
-    const products = initialProducts;
+    const products: Product[] = initialProducts;
 
 
     return (

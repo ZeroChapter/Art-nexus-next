@@ -4,8 +4,8 @@ import './PopUpStyle.css';
 
 export const PopUp = ({ 
     children, 
-    popUpController,
-    onClose,
+    popUpController = false,
+    onClose = () => {},
     variant = 'modal',
 }) => { 
     const [shouldRender, setShouldRender] = useState(popUpController);

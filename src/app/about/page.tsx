@@ -2,10 +2,21 @@
 
 import "./informationStyle.css";
 import { PhotoCarousel } from "@/widgets/carusel/PhotoCarousel";
+import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
 
 export default function AboutPage() {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
+    const breadcrumbs = breadcrumbListJsonLd([
+        { name: 'Главная', item: `${siteUrl}/` },
+        { name: 'О бренде', item: `${siteUrl}/about` },
+    ]);
+
     return (
         <main className="page about-page">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+            />
             <PhotoCarousel />
             <div className="content">
                 <div className="void desktop-only">

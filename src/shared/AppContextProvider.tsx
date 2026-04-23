@@ -1,5 +1,6 @@
 import React, { useState, useCallback, createContext, useContext, ReactNode } from "react";
 import { ProductColor, ProductSize } from "@/entities/product/model/type";
+import { PageToast } from "@/shared/ui/pageToast/PageToast";
 
 // 1. Интерфейс товара в корзине
 export interface BasketItem {
@@ -23,6 +24,9 @@ interface AppContextType {
   removeAllByParams: (productId: string | number, selectedSize: ProductSize, selectedColor: ProductColor) => void;
   decrementQuantity: (index: number) => void;
   clearBascet: () => void;
+  toast: { name: string; image: string; price: number } | null;
+  toastId: number;
+  clearToast: () => void;
 }
 
 const Context = createContext<AppContextType | null>(null);
@@ -34,7 +38,20 @@ interface ProviderProps {
 
 export const AppContextProvider = ({ children, initialBasket = [] }: ProviderProps) => {
   const context = useCreateAppContext(initialBasket);
-  return <Context.Provider value={context}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={context}>
+      {context.toast ? (
+        <PageToast
+          key={context.toastId}
+          name={context.toast.name}
+          image={context.toast.image}
+          price={context.toast.price}
+          onDone={context.clearToast}
+        />
+      ) : null}
+      {children}
+    </Context.Provider>
+  );
 };
 
 export function useAppContext(): AppContextType {
@@ -45,6 +62,8 @@ export function useAppContext(): AppContextType {
 
 export const useCreateAppContext = (props: BasketItem[]): AppContextType => {
   const [bascet, setBascet] = useState<BasketItem[]>(props || []);
+  const [toast, setToast] = useState<{ name: string; image: string; price: number } | null>(null);
+  const [toastId, setToastId] = useState(0);
  
   const setBascetStore = useCallback((arr: BasketItem[]) => {
     setBascet(arr);
@@ -59,6 +78,10 @@ export const useCreateAppContext = (props: BasketItem[]): AppContextType => {
         uniqueId: Date.now() + Math.random() 
       }
     ]);
+
+    // Если добавили новый товар до окончания таймера — тост перезапустится
+    setToast({ name: product.name, image: product.image, price: product.price });
+    setToastId(Date.now() + Math.random());
   }, []);
 
   const removeFromBascet = useCallback((indexOrId: number) => {
@@ -102,6 +125,10 @@ export const useCreateAppContext = (props: BasketItem[]): AppContextType => {
     setBascet([]);
   }, []);
 
+  const clearToast = useCallback(() => {
+    setToast(null);
+  }, []);
+
   return {
     bascet,
     setBascetStore,
@@ -111,5 +138,8 @@ export const useCreateAppContext = (props: BasketItem[]): AppContextType => {
     removeAllByParams,
     decrementQuantity,
     clearBascet,
+    toast,
+    toastId,
+    clearToast,
   };
 };

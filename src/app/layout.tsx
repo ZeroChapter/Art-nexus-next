@@ -10,6 +10,11 @@ import { Suspense } from "react"; // Импортируем Suspense
 export const metadata: Metadata = {
   title: "ART NEXUS | Эксклюзивная одежда",
   description: "Магазин уникальной одежды от российских дизайнеров",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export default function RootLayout({
