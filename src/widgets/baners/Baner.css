@@ -2,7 +2,8 @@
     max-width: 1000px;
     width: 100%;
     margin: auto;
-    
+    max-height: 300px;
+
     background-color: #EEEEEE;
 
     display: flex;
@@ -12,34 +13,11 @@
     animation: fadeScale 0.8s ease forwards;
     transition: transform 0.3s ease;
 }
-.video_block {
-    position: relative;
-    overflow: hidden;
-    min-width: 0;
-    max-width: 100%;
-}
-.video_block,
-.video_block iframe,
-.video_block video,
-.vodeo-iframe {
+
+.baner_image {
     width: 415px;
     height: 300px;
-    border-radius: 0px !important;
-    overflow: hidden;
-}
-
-.video_block iframe {
-    border: 0;
-    display: block;
-    pointer-events: none;
-}
-
-.video_block video {
-    display: block;
-    max-width: 100%;
-    object-fit: contain;
-    object-position: left center;
-    pointer-events: none; /* запрет паузы/меню */
+    object-fit: cover;
 }
 
 .baner_text {
@@ -89,21 +67,11 @@
         /* 20px слева/справа: margin НЕ уменьшает width:100%, поэтому считаем ширину явно */
         width: calc(100% - 40px);
         max-width: none;
+        max-height: 1000px;
         margin: 0 auto 30px;
         padding: 0;
         box-sizing: border-box;
         overflow-x: clip;
-    }
-
-    .video_block,
-    .video_block iframe,
-    .video_block video,
-    .vodeo-iframe {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        height: auto;
-        margin-top: 0;
     }
 
     .baner_text {

@@ -10,17 +10,10 @@ export interface BanerProps {
 export const Baner = () => {
     return (
         <div className="baner">
-            <div className='video_block'>
-                <video
-                    className="video-baner"
-                    src="/lama.webm"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                />
-            </div>
+                <img 
+                className='baner_image'
+                alt="Девушка в жемчужной маске гонит гусей" 
+                src="https://i.pinimg.com/736x/19/e2/e8/19e2e88ea307c7991e17beb01d93299d.jpg" />
             <div className='baner_text'>
                 <h2 className='baner_text-title'>Доставка с примеркой по Москве</h2>
                 <div className='baner_text-content'>
