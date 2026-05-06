@@ -11,6 +11,18 @@ export const MainPage = ({ initialProducts }: { initialProducts: Product[] }) =>
 
     const products: Product[] = initialProducts;
 
+    const cards = products.flatMap((product) => {
+        const inStoreColors = product.colors?.filter((c) => c.inStore === 'true') ?? [];
+        if (inStoreColors.length === 0) return [];
+
+        return inStoreColors.map((color) => (
+            <ProductCard
+                key={`${product.id}-${color.colorCode}`}
+                {...product}
+                selectedColor={color}
+            />
+        ));
+    });
 
     return (
         <>
@@ -21,11 +33,7 @@ export const MainPage = ({ initialProducts }: { initialProducts: Product[] }) =>
             </div>
             <Baner />
             <div className="catalog">
-                {products.map((product) => {
-                    if (product.colors.find(color => color.inStore === 'true')) {
-                        return <ProductCard key={product.id} {...product}/>
-                    }  
-                })}
+                 {cards}
             </div>
             <PopUp>
                 <SizeMessage/>

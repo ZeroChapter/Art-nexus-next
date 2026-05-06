@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from "react";
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
 import { useFormatPrice } from "@/entities/hooks/useFormatPrice";
 import { useRecomendation } from '@/entities/hooks/useRocomendation'
@@ -23,6 +23,9 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
     const params = useParams<{ id: string }>();
     const id = params?.id;
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const requestedColorCode = searchParams.get('color');
+    const appliedColorCodeRef = useRef<string | null>(null);
 
     const [product, setProduct] = useState<Product | null>(initialProduct || null);
     const [activColor, setActivColor] = useState<ProductColor | null>(() => 
@@ -74,6 +77,20 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
             })
             .catch(err => console.error(err));
     }, [id, product]);
+
+    useEffect(() => {
+        if (!product) return;
+        if (!requestedColorCode) return;
+        if (appliedColorCodeRef.current === requestedColorCode) return;
+
+        const match = product.colors?.find((c) => c.colorCode === requestedColorCode) ?? null;
+        if (!match) return;
+
+        appliedColorCodeRef.current = requestedColorCode;
+
+        // Avoid synchronous setState inside effect body (prevents cascading renders warning).
+        queueMicrotask(() => setActivColor(match));
+    }, [product, requestedColorCode]);
 
     if (!product) return <main className="page"><div>Загрузка...</div></main>;
 

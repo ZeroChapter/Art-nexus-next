@@ -8,6 +8,7 @@ import { Product, ProductColor } from "@/entities/product/model/type";
 
 interface ProductCardProps extends Product {
     isNew?: boolean;
+    selectedColor?: ProductColor | null;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -16,25 +17,53 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     coast,
     name,
     isNew,
-    colors
+    colors,
+    selectedColor
 }) => {
     const router = useRouter();
     const formatPrice = useFormatPrice();
 
+    const effectiveColor = selectedColor ?? colors?.[0] ?? null;
+
     const colorStyle = {
-        backgroundColor: colors?.[0]?.colorCode || '#ccc'
+        backgroundColor: effectiveColor?.colorCode || '#ccc'
     };
 
     const handleClick = () => {
+        if (effectiveColor?.colorCode) {
+            router.push(`/products/${id}?color=${encodeURIComponent(effectiveColor.colorCode)}`);
+            return;
+        }
         router.push(`/products/${id}`);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
+            if (effectiveColor?.colorCode) {
+                router.push(`/products/${id}?color=${encodeURIComponent(effectiveColor.colorCode)}`);
+                return;
+            }
             router.push(`/products/${id}`);
         }
     };
+
+    const colorIndexByOrder =
+        effectiveColor?.colorCode
+            ? (colors ?? []).findIndex((c) => c.colorCode === effectiveColor.colorCode)
+            : -1;
+
+    const previewImageByIndex =
+        effectiveColor && typeof effectiveColor.imageIndex === 'number'
+            ? image?.[effectiveColor.imageIndex]?.[0]
+            : undefined;
+
+    const previewImageByOrder =
+        colorIndexByOrder >= 0
+            ? image?.[colorIndexByOrder]?.[0]
+            : undefined;
+
+    const previewImage = previewImageByIndex ?? previewImageByOrder ?? image?.[0]?.[0];
 
     return (
         <div 
@@ -48,7 +77,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <div className="product_card-image">
                 <div className={`mew_lable ${isNew ? '' : 'hidden'}`}>NEW</div>
                 {/* Безопасное обращение к массиву изображений */}
-                <img src={image?.[0]?.[0] || ''} alt={name}/>
+                <img src={previewImage || ''} alt={name}/>
             </div>
             
             <div className="description_container">
