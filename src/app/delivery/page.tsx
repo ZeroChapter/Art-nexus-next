@@ -1,42 +1,45 @@
-'use client'
-import "@/app/informationStyle.css"
-import { useRouter } from "next/navigation";
-import { DeliveryMessage } from "../../entities/messages/DeliveryMessage";
+import type { Metadata } from "next";
 import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
+import DeliveryContent from "./DeliveryContent";
 
-export default function Delivery() {
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://art-nexus.ru";
 
-    const router = useRouter(); 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
-    const breadcrumbs = breadcrumbListJsonLd([
-        { name: 'Главная', item: `${siteUrl}/` },
-        { name: 'Доставка', item: `${siteUrl}/delivery` },
-    ]);
+export const metadata: Metadata = {
+  title: "Доставка дизайнерской одежды по Москве и России — Art Nexus",
+  description:
+    "Доставка одежды Art Nexus по России и доставка с примеркой по Москве. Условия, сроки и способы получения заказа.",
+  keywords: [
+    "доставка одежды",
+    "доставка с примеркой Москва",
+    "доставка одежды по России",
+    "доставка дизайнерской одежды",
+    "Art Nexus доставка",
+  ],
+  alternates: { canonical: `${SITE_URL}/delivery` },
+  openGraph: {
+    title: "Доставка по Москве и России — Art Nexus",
+    description:
+      "Доставка одежды Art Nexus по России и доставка с примеркой по Москве.",
+    url: `${SITE_URL}/delivery`,
+    siteName: "Art Nexus",
+    locale: "ru_RU",
+    type: "article",
+  },
+};
 
-    return (
-        <div className="content more-margin">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
-            />
-            
-            <div className="void">
-            </div>
-            <section className="information_block">
-                <article className="block">
-                    <button 
-                        className="arrow_button mobile-visible left-more"  
-                        onClick={() => router.back()}
-                        aria-label="Вернуться назад"
-                    >
-                        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M31 6.70703H2" stroke="black" strokeWidth="2"/>
-                            <path d="M7.94238 0.707032L2 6.64941L7.94238 12.5918" stroke="black" strokeWidth="2"/>
-                        </svg>
-                    </button>
-                    <DeliveryMessage />
-                </article>
-            </section>
-        </div>
-    )
+export default function DeliveryPage() {
+  const breadcrumbs = breadcrumbListJsonLd([
+    { name: "Главная", item: `${SITE_URL}/` },
+    { name: "Доставка", item: `${SITE_URL}/delivery` },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
+      <DeliveryContent />
+    </>
+  );
 }

@@ -1,117 +1,114 @@
 .baner {
-    max-width: 1000px;
-    width: 100%;
-    margin: auto;
-    max-height: 300px;
+  max-width: 1000px;
+  width: 100%;
+  margin: auto;
+  max-height: 300px;
 
-    background-color: #EEEEEE;
+  background-color: #eeeeee;
 
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 20px;
-    opacity: 100;
-    animation: fadeScale 0.8s ease forwards;
-    transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+  opacity: 100;
+  animation: fadeScale 0.8s ease forwards;
+  transition: transform 0.3s ease;
 }
 
 .baner_image {
-    width: 415px;
-    height: 300px;
-    object-fit: cover;
+  width: 415px;
+  height: 300px;
+  object-fit: cover;
 }
 
 .baner_text {
-    margin: 72px 76px 55px 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 519px;
+  margin: 72px 46px 55px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 519px;
 }
 
 .baner_text-title {
-    text-transform: uppercase;
-    font-size: 25px;
-    font-weight: 700;
-    margin: 0;
-    padding: 0;
+  text-transform: uppercase;
+  font-size: 25px;
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
 }
 
 .baner_text-content {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-right: 86px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-right: 50px;
 }
 
 .baner_text-grey {
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 110%;
-    color: #0B0B0B;
-
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 110%;
+  color: #0b0b0b;
 }
 
 .baner_text-description {
-    font-size: 14px;
-    font-weight: 700;
-    color: #0B0B0B;
-    letter-spacing: 0.05em;
-    line-height: 110%;
-    text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0b0b0b;
+  letter-spacing: 0.05em;
+  line-height: 110%;
+  text-transform: uppercase;
 }
 
 @media (max-width: 768px) {
+  .baner {
+    flex-direction: column;
+    /* 20px слева/справа: margin НЕ уменьшает width:100%, поэтому считаем ширину явно */
+    width: calc(100% - 40px);
+    max-width: none;
+    max-height: 1000px;
+    margin: 0 auto 30px;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: clip;
+  }
 
-    .baner {
-        flex-direction: column;
-        /* 20px слева/справа: margin НЕ уменьшает width:100%, поэтому считаем ширину явно */
-        width: calc(100% - 40px);
-        max-width: none;
-        max-height: 1000px;
-        margin: 0 auto 30px;
-        padding: 0;
-        box-sizing: border-box;
-        overflow-x: clip;
-    }
+  .baner_text {
+    margin: 10px 0 30px;
+    max-width: 100%;
+    padding: 10px 20px 0 20px;
+  }
 
-    .baner_text {
-        margin: 10px 0 30px;
-        max-width: 100%;
-        padding: 10px 20px 0 20px;
-    }
+  .baner_text-title {
+    text-transform: uppercase;
+    font-size: 22px;
+    font-weight: 700;
+  }
 
-    .baner_text-title {
-        text-transform: uppercase;
-        font-size: 22px;
-        font-weight: 700;
-    }
-    
-    .baner_text-content {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-right: 0;
-    }
-    
-    .baner_text-grey {
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 110%;
-        color: #0B0B0B;
-    }
-    
-    .baner_text-description {
-        font-size: 12px;
-        font-weight: 900;
-        color: #0B0B0B;
-        text-transform: uppercase;
-    }
+  .baner_text-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-right: 0;
+  }
 
+  .baner_text-grey {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 110%;
+    color: #0b0b0b;
+  }
+
+  .baner_text-description {
+    font-size: 12px;
+    font-weight: 900;
+    color: #0b0b0b;
+    text-transform: uppercase;
+  }
 }
 
 @keyframes fadeScale {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

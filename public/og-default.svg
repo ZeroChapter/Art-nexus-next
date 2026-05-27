@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0B0B0B"/>
+  <g transform="translate(540 150)" stroke="#FFFFFF" stroke-width="2.5" stroke-miterlimit="10" fill="none">
+    <circle cx="60" cy="40" r="55"/>
+    <circle cx="60" cy="80" r="55"/>
+    <circle cx="40" cy="60" r="55"/>
+    <circle cx="80" cy="60" r="55"/>
+  </g>
+  <g fill="#FFFFFF" font-family="'Graphik', 'Helvetica Neue', Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="380" font-size="80" font-weight="600" letter-spacing="8">ART NEXUS</text>
+    <text x="600" y="450" font-size="28" font-weight="400" letter-spacing="6" opacity="0.85">ДИЗАЙНЕРСКАЯ ОДЕЖДА</text>
+    <text x="600" y="520" font-size="20" font-weight="400" letter-spacing="4" opacity="0.6">art-nexus.ru</text>
+  </g>
+</svg>

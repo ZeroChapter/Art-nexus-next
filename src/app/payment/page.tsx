@@ -1,45 +1,44 @@
-'use client'
-
-import "@/app/informationStyle.css"
-import { useRouter } from "next/navigation";
+import type { Metadata } from "next";
 import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
+import PaymentContent from "./PaymentContent";
 
-export default function Payment() {
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://art-nexus.ru";
 
-    const router = useRouter();
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
-    const breadcrumbs = breadcrumbListJsonLd([
-        { name: 'Главная', item: `${siteUrl}/` },
-        { name: 'Оплата', item: `${siteUrl}/payment` },
-    ]);
+export const metadata: Metadata = {
+  title: "Оплата заказа — Art Nexus",
+  description:
+    "Как оплатить заказ в интернет-магазине дизайнерской одежды Art Nexus. Способы оплаты и условия.",
+  keywords: [
+    "оплата заказа",
+    "оплата дизайнерской одежды",
+    "способы оплаты Art Nexus",
+    "интернет-магазин одежды оплата",
+  ],
+  alternates: { canonical: `${SITE_URL}/payment` },
+  openGraph: {
+    title: "Оплата заказа — Art Nexus",
+    description:
+      "Способы оплаты заказа в интернет-магазине дизайнерской одежды Art Nexus.",
+    url: `${SITE_URL}/payment`,
+    siteName: "Art Nexus",
+    locale: "ru_RU",
+    type: "article",
+  },
+};
 
-    return (
-        <div className="content more-margin">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
-            />
-            <div className="void">
-            </div>
-            <section className="information_block">
-                <article className="page-information-block">
-                     <button 
-                        className="arrow_button mobile-visible left-more"  
-                        onClick={() => router.back()}
-                        aria-label="Вернуться назад"
-                    >
-                        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M31 6.70703H2" stroke="black" strokeWidth="2"/>
-                            <path d="M7.94238 0.707032L2 6.64941L7.94238 12.5918" stroke="black" strokeWidth="2"/>
-                        </svg>
-                    </button>
-                    <h1>Оплата</h1>
-                    <p>
-                        После оформления заказа с вами свяжется наш менеджер. <br />
-                        Вы сможете выбрать удобный способ оплаты. 
-                    </p>
-                </article>
-            </section>
-        </div>
-    )
+export default function PaymentPage() {
+  const breadcrumbs = breadcrumbListJsonLd([
+    { name: "Главная", item: `${SITE_URL}/` },
+    { name: "Оплата", item: `${SITE_URL}/payment` },
+  ]);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
+      <PaymentContent />
+    </>
+  );
 }

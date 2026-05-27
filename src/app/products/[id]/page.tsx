@@ -26,10 +26,27 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const description = product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
   const imageUrl = product.image?.[0]?.[0];
 
+  const colorNames = (product.colors ?? [])
+    .map((c: Product["colors"][number]) => c.colorName)
+    .filter(Boolean);
+  const sizeNames = (product.size ?? [])
+    .map((s: Product["size"][number]) => s.name)
+    .filter(Boolean);
+
   return {
-    title: `${product.name} | Купить одежду Art Nexus`, 
+    title: `${product.name} — купить дизайнерскую одежду Art Nexus`,
     description,
-    keywords: [product.name, 'Art Nexus', 'дизайнерская одежда', 'купить одежду'],
+    keywords: [
+      product.name,
+      'Art Nexus',
+      'дизайнерская одежда',
+      'купить дизайнерскую одежду',
+      'купить дизайнерскую одежду в Москве',
+      'российский бренд',
+      'российский дизайнерский бренд',
+      ...colorNames,
+      ...sizeNames,
+    ],
     alternates: {
       canonical: url,
     },
@@ -68,16 +85,54 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     notFound();
   }
 
+  const url = `${SITE_URL}/products/${id}`;
+  const description =
+    product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
+  const images = (product.image ?? [])
+    .map((variant: string[]) => variant?.[0])
+    .filter(Boolean);
+
+  const hasInStock = (product.size ?? []).some(
+    (s: Product["size"][number]) => s.inStore === "true",
+  );
+  const availability = hasInStock
+    ? "https://schema.org/InStock"
+    : "https://schema.org/OutOfStock";
+
   const breadcrumbs = breadcrumbListJsonLd([
     { name: 'Главная', item: `${SITE_URL}/` },
-    { name: product.name, item: `${SITE_URL}/products/${id}` },
+    { name: product.name, item: url },
   ]);
+
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description,
+    image: images,
+    sku: String(product.id),
+    mpn: String(product.id),
+    brand: { '@type': 'Brand', name: 'Art Nexus' },
+    offers: {
+      '@type': 'Offer',
+      url,
+      priceCurrency: 'RUB',
+      price: product.coast,
+      availability,
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: { '@type': 'Organization', name: 'Art Nexus' },
+    },
+  };
 
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
       <ProductPage initialProduct={product} />
     </>
