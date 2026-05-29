@@ -32,8 +32,8 @@ export const MainPage = ({
       <main className="page">
         <PhotoCarousel />
         <div className="catalog_title">
-          <h1>
-            Art Nexus — дизайнерская одежда <br /> российского бренда
+          <h1 className="catalog_title-heading">
+            Art Nexus — дизайнерская одежда российского бренда
           </h1>
         </div>
         <Baner />

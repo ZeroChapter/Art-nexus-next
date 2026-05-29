@@ -13,13 +13,13 @@ import { DeliveryMessage } from "@/entities/messages/DeliveryMessage";
 import { CompoundMessage } from "@/entities/messages/CompoundMessage";
 import { Product, ProductColor, ProductSize } from "@/entities/product/model/type";
 import './ProductPageStyle.css';
-import { SERVER_URL } from "@/shared/serverConfig";
 
 interface ProductPageProps {
-    initialProduct?: Product;
+    initialProduct: Product;
+    allProducts: Product[];
 }
 
-const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
+const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, allProducts }) => {
     const params = useParams<{ id: string }>();
     const id = params?.id;
     const router = useRouter();
@@ -27,59 +27,29 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
     const requestedColorCode = searchParams.get('color');
     const appliedColorCodeRef = useRef<string | null>(null);
 
-    const [product, setProduct] = useState<Product | null>(initialProduct || null);
-    const [activColor, setActivColor] = useState<ProductColor | null>(() => 
-        initialProduct?.colors?.find(c => c.inStore === 'true') || null
+    const [activColor, setActivColor] = useState<ProductColor | null>(() =>
+        initialProduct.colors?.find(c => c.inStore === 'true') || null
     );
-    const [activSize, setActiveSize] = useState<ProductSize | null>(() => 
-        initialProduct?.size?.find(s => s.inStore === 'true') || null
+    const [activSize, setActiveSize] = useState<ProductSize | null>(() =>
+        initialProduct.size?.find(s => s.inStore === 'true') || null
     );
-    
+
     const [showPopUp, setShowPopUp] = useState<boolean>(false);
     const [messageComponent, setMessageComponent] = useState<React.ReactNode>(null);
 
     const formatPrice = useFormatPrice();
-    const [allGoods, setAllGoods] = useState<Product[]>([]);
-
-    useEffect(() => {
-        fetch(`${SERVER_URL}/api/goods`)
-            .then(res => res.json())
-            .then(data => {
-                setAllGoods(data); 
-            
-                const found = data.find((item: Product) => item.id.toString() === id);
-                setProduct(found);
-            });
-    }, [id]);
-
-    const getRecomendation = useRecomendation(allGoods);
+    const getRecomendation = useRecomendation(allProducts);
     const recomendationCards = getRecomendation(4);
 
     const { addToBascet } = useAppContext();
+
+    const product = initialProduct;
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [id]);
 
     useEffect(() => {
-        if (product) return;
-        if (!id) return;
-        
-        fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/goods`)
-            .then(res => res.json())
-            .then(data => {
-                const found = data.find((item: Product) => item.id.toString() === id);
-                if (found) {
-                    setProduct(found);
-                    setActivColor(found.colors?.find((c: ProductColor) => c.inStore === 'true') || null);
-                    setActiveSize(found.size?.find((s: ProductSize) => s.inStore === 'true') || null);
-                }
-            })
-            .catch(err => console.error(err));
-    }, [id, product]);
-
-    useEffect(() => {
-        if (!product) return;
         if (!requestedColorCode) return;
         if (appliedColorCodeRef.current === requestedColorCode) return;
 
@@ -87,12 +57,8 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
         if (!match) return;
 
         appliedColorCodeRef.current = requestedColorCode;
-
-        // Avoid synchronous setState inside effect body (prevents cascading renders warning).
         queueMicrotask(() => setActivColor(match));
     }, [product, requestedColorCode]);
-
-    if (!product) return <main className="page"><div>Загрузка...</div></main>;
 
     const { image, coast, name, size, colors, description } = product;
 
@@ -100,22 +66,22 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct }) => {
 
     const renderSizeInfo = (sizes: ProductSize[]) => {
         if (!sizes?.length) return <p className="one_size_string">Размер не указан</p>;
-        
+
         if (sizes.length === 1) {
             const isLong = sizes[0].name.length > 3;
             return (
                 <div className="one_size_string">
-                    <span className="mobile-hidden">Размер:</span> 
+                    <span className="mobile-hidden">Размер:</span>
                     <div className={`one_size_string-label ${isLong ? 'long-text' : ''}`}>
                         {formatSizeName(sizes[0].name)}
-                    </div> 
+                    </div>
                     <span className="mobile-hidden">(one size)</span>
                 </div>
             );
         }
 
         return (
-            <div className="size_string"> 
+            <div className="size_string">
                 {sizes.map((item, index) => {
                     const isLong = item.name.length > 3;
                     return (

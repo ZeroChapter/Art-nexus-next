@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import "./ProductcardStyle.css";
 import { useFormatPrice } from "@/entities/hooks/useFormatPrice";
 import { Product, ProductColor } from "@/entities/product/model/type";
@@ -21,7 +21,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   colors,
   selectedColor,
 }) => {
-  const router = useRouter();
   const formatPrice = useFormatPrice();
 
   const effectiveColor = selectedColor ?? colors?.[0] ?? null;
@@ -30,28 +29,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     backgroundColor: effectiveColor?.colorCode || "#ccc",
   };
 
-  const handleClick = () => {
-    if (effectiveColor?.colorCode) {
-      router.push(
-        `/products/${id}?color=${encodeURIComponent(effectiveColor.colorCode)}`,
-      );
-      return;
-    }
-    router.push(`/products/${id}`);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      if (effectiveColor?.colorCode) {
-        router.push(
-          `/products/${id}?color=${encodeURIComponent(effectiveColor.colorCode)}`,
-        );
-        return;
-      }
-      router.push(`/products/${id}`);
-    }
-  };
+  const href = effectiveColor?.colorCode
+    ? `/products/${id}?color=${encodeURIComponent(effectiveColor.colorCode)}`
+    : `/products/${id}`;
 
   const colorIndexByOrder = effectiveColor?.colorCode
     ? (colors ?? []).findIndex((c) => c.colorCode === effectiveColor.colorCode)
@@ -69,12 +49,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     previewImageByIndex ?? previewImageByOrder ?? image?.[0]?.[0];
 
   return (
-    <div
+    <Link
+      href={href}
       className="product_card"
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      role="link"
-      tabIndex={0}
       aria-label={`${name}, цена ${formatPrice(coast)}`}
     >
       <div className="product_card-image">
@@ -98,6 +75,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
         <p>{formatPrice(coast)}</p>
       </div>
-    </div>
+    </Link>
   );
 };

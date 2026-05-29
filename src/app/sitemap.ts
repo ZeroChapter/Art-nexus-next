@@ -1,12 +1,19 @@
 import type { MetadataRoute } from 'next';
 import type { Product } from '@/entities/product/model/type';
-import { SERVER_URL } from '@/shared/serverConfig';
 
-const SITE_URL = 'https://art-nexus.ru';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
+// Внутренний адрес API: бэкенд может жить отдельно от фронта. Задайте API_INTERNAL_URL
+// в .env (например, http://backend:5000), иначе используется публичный домен.
+const API_URL = process.env.API_INTERNAL_URL ?? SITE_URL;
 
-async function safeGetProducts(): Promise<Array<{ id: string | number; updatedAt?: string }>> {
+// Sitemap пересобирается раз в час — не дёргаем API на каждый запрос бота.
+export const revalidate = 3600;
+
+async function safeGetProducts(): Promise<Array<{ id: string | number }>> {
   try {
-    const res = await fetch(`${SERVER_URL}/api/goods`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/api/goods`, {
+      next: { revalidate: 3600 },
+    });
     if (!res.ok) return [];
     const data: Product[] = await res.json();
     return data.map((p) => ({ id: p.id }));
@@ -36,4 +43,3 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [...staticRoutes, ...productRoutes];
 }
-

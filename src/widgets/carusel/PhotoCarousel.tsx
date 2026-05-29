@@ -146,11 +146,15 @@ export const PhotoCarousel: React.FC = () => {
   const renderSlides = (setIndex: 0 | 1) =>
     slides.map((slide, idx) => {
       const isAboveFold = setIndex === 0 && idx < 3;
+      const alt =
+        slide.alt ||
+        slide.title ||
+        `Коллекция Art Nexus — дизайнерская одежда${slide.id != null ? ` (${slide.id})` : ""}`;
       return (
         <img
           key={`${setIndex}-${slide.id}`}
           src={slide.url}
-          alt="Art Nexus — дизайнерская одежда"
+          alt={alt}
           className="carousel-image"
           draggable={false}
           loading={isAboveFold ? "eager" : "lazy"}

@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     description:
       "Art Nexus — российский дизайнерский бренд. Эксклюзивная одежда с доставкой по Москве и России.",
     images: [
-      { url: "/og-default.svg", width: 1200, height: 630, alt: "Art Nexus" },
+      { url: "/og-default.jpg", width: 1200, height: 630, alt: "Art Nexus — дизайнерская одежда" },
     ],
   },
   twitter: {
@@ -47,10 +47,15 @@ export const metadata: Metadata = {
     title: "Art Nexus — дизайнерская одежда",
     description:
       "Art Nexus — российский дизайнерский бренд. Эксклюзивная одежда с доставкой по Москве и России.",
-    images: ["/og-default.svg"],
+    images: ["/og-default.jpg"],
   },
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
   },
 };
 

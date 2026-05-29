@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     locale: "ru_RU",
     type: "website",
     images: [
-      { url: "/og-default.svg", width: 1200, height: 630, alt: "Art Nexus" },
+      { url: "/og-default.jpg", width: 1200, height: 630, alt: "Art Nexus — дизайнерская одежда" },
     ],
   },
 };
@@ -71,8 +71,9 @@ export default async function Page() {
       },
     ],
     sameAs: [
-      // TODO: add real social profiles (VK/Instagram/Pinterest/etc.)
       "https://t.me/ArtNexus_Manager",
+      "https://t.me/ArtNexusCloth",
+      "https://www.instagram.com/artnexus.clothing",
     ],
   };
 

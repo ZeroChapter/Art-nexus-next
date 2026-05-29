@@ -45,6 +45,15 @@ footer {
     letter-spacing: -0.4;
 }
 
+.contact_blok a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.contact_blok a:hover {
+    opacity: 0.85;
+}
+
 .contact_blok {
     grid-column: 2;
     color: rgb(255, 255, 255);
@@ -104,6 +113,10 @@ hr {
     gap: 33px;
 }
 
+.icon_bar a {
+    display: inline-flex;
+}
+
 .icon_bar img {
     width: 20px;
     height: 20px;
@@ -111,7 +124,7 @@ hr {
     transition: all 0.3s ease;
 } 
 
-.icon_bar img:hover {
+.icon_bar a:hover img {
     opacity: 1;
     transform: scale(1.3);
     transition: all 0.3s ease;
