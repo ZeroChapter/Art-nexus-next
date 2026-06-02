@@ -4,7 +4,8 @@ import { Providers } from "./providers";
 import { HeaderComponent } from "@/widgets/header/HeaderComponent";
 import { HeaderMobile } from "@/widgets/headerMobile/HeaderMobile";
 import { Footer } from "@/widgets/footer/Footer";
-import { YandexMetrika } from "./YandexMetrika"; // Импортируем компонент
+import { getYandexMetrikaId, YandexMetrikaScript } from "./YandexMetrika";
+import { YandexMetrikaHits } from "./YandexMetrikaHits";
 import { Suspense } from "react"; // Импортируем Suspense
 
 export const metadata: Metadata = {
@@ -53,10 +54,19 @@ export const metadata: Metadata = {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
-  },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+  process.env.NEXT_PUBLIC_YANDEX_VERIFICATION
+    ? {
+        verification: {
+          ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION && {
+            google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+          }),
+          ...(process.env.NEXT_PUBLIC_YANDEX_VERIFICATION && {
+            yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+          }),
+        },
+      }
+    : {}),
 };
 
 export default function RootLayout({
@@ -64,11 +74,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const yandexMetrikaId = getYandexMetrikaId();
+
   return (
     <html lang="ru">
       <body>
+        <YandexMetrikaScript counterId={yandexMetrikaId} />
         <Suspense fallback={null}>
-          <YandexMetrika counterId={109450548} />
+          <YandexMetrikaHits counterId={yandexMetrikaId} />
         </Suspense>
 
         <Providers>
