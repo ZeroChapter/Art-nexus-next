@@ -68,7 +68,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <div className="description_container">
-        <h2 className="product-name">{name}</h2>
+        <h2 className="product-name" title={name}>
+          {name}
+        </h2>
         <div className="color_container">
           <div className="colorSquer" style={colorStyle}></div>+
           {colors?.length || 0}

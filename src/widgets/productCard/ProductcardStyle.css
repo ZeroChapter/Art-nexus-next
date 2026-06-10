@@ -23,6 +23,10 @@
 .product-name {
   text-transform: uppercase;
   font-weight: 400;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .description_container {
