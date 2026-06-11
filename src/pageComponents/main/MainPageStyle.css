@@ -4,6 +4,10 @@
   align-items: center;
 }
 
+.catalog_title-heading {
+  max-width: 620px;
+}
+
 .seo-block {
   display: flex;
   flex-direction: column;
