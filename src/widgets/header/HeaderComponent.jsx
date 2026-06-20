@@ -1,10 +1,19 @@
 'use client'
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import './HeaderComponentStyle.css';
-import Link from 'next/link'; // Заменили react-router-dom
-import { useAppContext } from "@/shared/AppContextProvider"; // [CHECK PATH]
-import { PopUp } from "@/widgets/popup/PopUp"; // [CHECK PATH]
-import { Bascket } from "@/widgets/bascket/Bascet"; // [CHECK PATH]
+import Link from 'next/link';
+import { useAppContext } from "@/shared/AppContextProvider";
+
+const PopUp = dynamic(
+  () => import("@/widgets/popup/PopUp").then((m) => m.PopUp),
+  { ssr: false },
+);
+
+const Bascket = dynamic(
+  () => import("@/widgets/bascket/Bascet").then((m) => m.Bascket),
+  { ssr: false },
+);
 
 export const HeaderComponent = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -53,9 +62,11 @@ export const HeaderComponent = () => {
                     </ul>
                 </nav>
             </div>
-            <PopUp popUpController={showPopUp} onClose={handleClose} >
-                <Bascket />
-            </PopUp>
+            {showPopUp ? (
+                <PopUp popUpController={showPopUp} onClose={handleClose}>
+                    <Bascket />
+                </PopUp>
+            ) : null}
         </header>
     );
 };

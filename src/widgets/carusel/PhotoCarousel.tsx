@@ -9,9 +9,9 @@ import {
 } from "react";
 import "./PhotoCarouselStyle.css";
 import { SERVER_URL } from "@/shared/serverConfig";
+import type { CarouselSlide } from "@/entities/carousel/api/getCarousel";
 
-// КЭШ В ПАМЯТИ: данные не будут запрашиваться повторно при переходе по страницам
-let cachedSlides: any[] | null = null;
+let cachedSlides: CarouselSlide[] | null = null;
 let isFetching = false;
 
 const DESKTOP_SCROLL_DURATION_MS = 160_000;
@@ -26,9 +26,19 @@ const wrapTranslate = (x: number, setWidth: number): number => {
   return t;
 };
 
-export const PhotoCarousel: React.FC = () => {
-  const [slides, setSlides] = useState<any[]>(cachedSlides || []);
-  const [isLoading, setIsLoading] = useState<boolean>(!cachedSlides);
+interface PhotoCarouselProps {
+  initialSlides?: CarouselSlide[];
+}
+
+export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
+  initialSlides = [],
+}) => {
+  const [slides, setSlides] = useState<CarouselSlide[]>(
+    () => cachedSlides ?? initialSlides,
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(
+    () => !cachedSlides && initialSlides.length === 0,
+  );
   const [translateX, setTranslateX] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
@@ -42,15 +52,22 @@ export const PhotoCarousel: React.FC = () => {
 
   translateXRef.current = translateX;
 
-  // 1. Загрузка данных с кэшированием
   useEffect(() => {
-    if (cachedSlides) return;
+    if (initialSlides.length > 0 && !cachedSlides) {
+      cachedSlides = initialSlides;
+      setSlides(initialSlides);
+      setIsLoading(false);
+    }
+  }, [initialSlides]);
+
+  useEffect(() => {
+    if (cachedSlides || initialSlides.length > 0) return;
     if (isFetching) return;
 
     isFetching = true;
     fetch(`${SERVER_URL}/api/carousel`)
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: CarouselSlide[]) => {
         cachedSlides = data;
         setSlides(data);
         setIsLoading(false);
@@ -61,7 +78,7 @@ export const PhotoCarousel: React.FC = () => {
         setIsLoading(false);
         isFetching = false;
       });
-  }, []);
+  }, [initialSlides.length]);
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
@@ -71,11 +88,11 @@ export const PhotoCarousel: React.FC = () => {
     return () => mql.removeEventListener("change", handler);
   }, []);
 
-  const updateSetWidth = useCallback(() => {
+  const updateSetWidth = useCallback(function measureSetWidth() {
     const el = trackRef.current;
 
     if (!el || el.scrollWidth < 2) {
-      requestAnimationFrame(updateSetWidth);
+      requestAnimationFrame(measureSetWidth);
       return;
     }
     setWidthRef.current = el.scrollWidth / 2;
@@ -93,7 +110,6 @@ export const PhotoCarousel: React.FC = () => {
     return () => ro.disconnect();
   }, [updateSetWidth, slides.length, isLoading]);
 
-  // 3. Анимация (RequestAnimationFrame)
   useEffect(() => {
     if (isLoading || slides.length === 0) return;
 
@@ -152,7 +168,7 @@ export const PhotoCarousel: React.FC = () => {
         `Коллекция Art Nexus — дизайнерская одежда${slide.id != null ? ` (${slide.id})` : ""}`;
       return (
         <img
-          key={`${setIndex}-${slide.id}`}
+          key={`${setIndex}-${slide.id ?? idx}`}
           src={slide.url}
           alt={alt}
           className="carousel-image"

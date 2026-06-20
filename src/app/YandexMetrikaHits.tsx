@@ -32,18 +32,15 @@ export function YandexMetrikaHits({ counterId }: YandexMetrikaHitsProps) {
       return;
     }
 
-    const interval = window.setInterval(() => {
-      if (window.ym) {
-        sendHit();
-        window.clearInterval(interval);
-      }
-    }, 100);
+    const onReady = () => {
+      sendHit();
+      window.removeEventListener("yandex-metrika-ready", onReady);
+    };
 
-    const timeout = window.setTimeout(() => window.clearInterval(interval), 10_000);
+    window.addEventListener("yandex-metrika-ready", onReady);
 
     return () => {
-      window.clearInterval(interval);
-      window.clearTimeout(timeout);
+      window.removeEventListener("yandex-metrika-ready", onReady);
     };
   }, [pathname, searchParams, counterId]);
 

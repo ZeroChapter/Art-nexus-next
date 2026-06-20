@@ -1,15 +1,14 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import "./ProductcardStyle.css";
-import { useFormatPrice } from "@/entities/hooks/useFormatPrice";
+import { formatPrice } from "@/shared/lib/formatPrice";
 import { Product, ProductColor } from "@/entities/product/model/type";
 
 interface ProductCardProps extends Product {
   isNew?: boolean;
   selectedColor?: ProductColor | null;
+  priority?: boolean;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -20,9 +19,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isNew,
   colors,
   selectedColor,
+  priority = false,
 }) => {
-  const formatPrice = useFormatPrice();
-
   const effectiveColor = selectedColor ?? colors?.[0] ?? null;
 
   const colorStyle = {
@@ -63,6 +61,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             fill
             sizes="(max-width: 768px) 50vw, 245px"
             style={{ objectFit: "cover", objectPosition: "center" }}
+            priority={priority}
+            loading={priority ? undefined : "lazy"}
           />
         ) : null}
       </div>

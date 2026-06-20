@@ -28,8 +28,9 @@ export function YandexMetrikaScript({ counterId }: YandexMetrikaScriptProps) {
               clickmap:true,
               trackLinks:true,
               accurateTrackBounce:true,
-              webvisor:true
+              webvisor:false
             });
+            window.dispatchEvent(new Event("yandex-metrika-ready"));
           `,
         }}
       />

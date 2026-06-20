@@ -1,5 +1,6 @@
 import { MainPage } from "@/pageComponents/main/MainPage";
 import { getGoods } from "@/entities/product/api/getGoods";
+import { getCarouselSlides } from "@/entities/carousel/api/getCarousel";
 import { Metadata } from "next";
 import { Product } from "@/entities/product/model/type";
 
@@ -36,7 +37,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const products: Product[] = await getGoods();
+  const [products, carouselSlides] = await Promise.all([
+    getGoods() as Promise<Product[]>,
+    getCarouselSlides(),
+  ]);
   const siteUrl = "https://art-nexus.ru";
 
   const onlineStoreJsonLd = {
@@ -99,7 +103,7 @@ export default async function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
       />
 
-      <MainPage initialProducts={products} />
+      <MainPage initialProducts={products} initialSlides={carouselSlides} />
     </>
   );
 }

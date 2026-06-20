@@ -1,8 +1,9 @@
+import { CATALOG_REVALIDATE_SECONDS } from '@/shared/cacheConfig';
 import { SERVER_URL } from '@/shared/serverConfig';
 
 export async function getGoods() {
   const res = await fetch(`${SERVER_URL}/api/goods`, {
-    cache: 'no-store'
+    next: { revalidate: CATALOG_REVALIDATE_SECONDS },
   });
 
   if (!res.ok) {

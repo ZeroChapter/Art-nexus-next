@@ -1,11 +1,24 @@
 'use client'
 import './HeaderMobileStyle.css';
 import { useState, useEffect } from "react";
-import { useAppContext } from '@/shared/AppContextProvider'; // [CHECK PATH]
-import Link from 'next/link'; // Заменили react-router-dom
-import { PopUp } from '@/widgets/popup/PopUp'; // [CHECK PATH]
-import { Bascket } from '@/widgets/bascket/Bascet'; // [CHECK PATH]
-import { MobileMenu } from '@/widgets/mobileMenu/MobileMenu'; // [CHECK PATH]
+import dynamic from "next/dynamic";
+import { useAppContext } from '@/shared/AppContextProvider';
+import Link from 'next/link';
+
+const PopUp = dynamic(
+  () => import('@/widgets/popup/PopUp').then((m) => m.PopUp),
+  { ssr: false },
+);
+
+const Bascket = dynamic(
+  () => import('@/widgets/bascket/Bascet').then((m) => m.Bascket),
+  { ssr: false },
+);
+
+const MobileMenu = dynamic(
+  () => import('@/widgets/mobileMenu/MobileMenu').then((m) => m.MobileMenu),
+  { ssr: false },
+);
 
 export const HeaderMobile = () => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -47,10 +60,14 @@ export const HeaderMobile = () => {
                     </button>
                 </div>
             </div>
-            <PopUp popUpController={showPopUp} onClose={handleClose} >
-                <Bascket />
-            </PopUp>
-            <MobileMenu isOpen={showMenu} onClose={() => setShowMenu(false)} />
+            {showPopUp ? (
+                <PopUp popUpController={showPopUp} onClose={handleClose}>
+                    <Bascket />
+                </PopUp>
+            ) : null}
+            {showMenu ? (
+                <MobileMenu isOpen={showMenu} onClose={() => setShowMenu(false)} />
+            ) : null}
         </header>
     )
 }

@@ -1,5 +1,5 @@
 import "./PageToast.css";
-import { useFormatPrice } from "@/entities/hooks/useFormatPrice";
+import { formatPrice } from "@/shared/lib/formatPrice";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface PageToastProps {
@@ -17,7 +17,6 @@ export const PageToast = ({
   durationMs = 3000,
   onDone,
 }: PageToastProps) => {
-  const formatPrice = useFormatPrice();
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(true);
   const timerRef = useRef<number | null>(null);

@@ -1,25 +1,45 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
-import { useFormatPrice } from "@/entities/hooks/useFormatPrice";
-import { useRecomendation } from '@/entities/hooks/useRocomendation'
+import { formatPrice } from "@/shared/lib/formatPrice";
 import { ProductCard } from "@/widgets/productCard/ProductCard";
-import { PopUp } from "@/widgets/popup/PopUp";
-import { SizeMessage } from "@/entities/messages/SizeMessage";
 import { useAppContext } from "@/shared/AppContextProvider";
-import { DeliveryMessage } from "@/entities/messages/DeliveryMessage";
-import { CompoundMessage } from "@/entities/messages/CompoundMessage";
 import { Product, ProductColor, ProductSize } from "@/entities/product/model/type";
 import './ProductPageStyle.css';
 
+const PhotoGalerey = dynamic(
+  () => import("@/widgets/photoGalerey/PhotoGalerey").then((m) => m.PhotoGalerey),
+  { ssr: false, loading: () => <div className="gallery-placeholder" aria-hidden="true" /> },
+);
+
+const PopUp = dynamic(
+  () => import("@/widgets/popup/PopUp").then((m) => m.PopUp),
+  { ssr: false },
+);
+
+const SizeMessage = dynamic(
+  () => import("@/entities/messages/SizeMessage").then((m) => m.SizeMessage),
+  { ssr: false },
+);
+
+const DeliveryMessage = dynamic(
+  () => import("@/entities/messages/DeliveryMessage").then((m) => m.DeliveryMessage),
+  { ssr: false },
+);
+
+const CompoundMessage = dynamic(
+  () => import("@/entities/messages/CompoundMessage").then((m) => m.CompoundMessage),
+  { ssr: false },
+);
+
 interface ProductPageProps {
     initialProduct: Product;
-    allProducts: Product[];
+    recommendations: Product[];
 }
 
-const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, allProducts }) => {
+const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendations }) => {
     const params = useParams<{ id: string }>();
     const id = params?.id;
     const router = useRouter();
@@ -36,10 +56,6 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, allProducts }
 
     const [showPopUp, setShowPopUp] = useState<boolean>(false);
     const [messageComponent, setMessageComponent] = useState<React.ReactNode>(null);
-
-    const formatPrice = useFormatPrice();
-    const getRecomendation = useRecomendation(allProducts);
-    const recomendationCards = getRecomendation(4);
 
     const { addToBascet } = useAppContext();
 
@@ -156,8 +172,8 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, allProducts }
 
             <section className="recomendation">
                 <div className="recomendation-cards" role="list">
-                    {recomendationCards && recomendationCards.length > 0 ? (
-                        recomendationCards.map((card: Product, index: number) => (
+                    {recommendations.length > 0 ? (
+                        recommendations.map((card: Product, index: number) => (
                             <article key={card.id || index} role="listitem">
                                 <ProductCard {...card} />
                             </article>
@@ -168,9 +184,11 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, allProducts }
                 </div>
             </section>
 
-            <PopUp popUpController={showPopUp} onClose={() => setShowPopUp(false)}>
-                {messageComponent}
-            </PopUp>
+            {showPopUp ? (
+                <PopUp popUpController={showPopUp} onClose={() => setShowPopUp(false)}>
+                    {messageComponent}
+                </PopUp>
+            ) : null}
         </main>
     );
 };

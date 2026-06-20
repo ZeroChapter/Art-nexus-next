@@ -5,32 +5,41 @@ import { Baner } from "../../widgets/baners/Baner";
 import { PopUp } from "../../widgets/popup/PopUp";
 import { SizeMessage } from "../../entities/messages/SizeMessage";
 import { Product } from "@/entities/product/model/type";
+import { CarouselSlide } from "@/entities/carousel/api/getCarousel";
 
 export const MainPage = ({
   initialProducts,
+  initialSlides,
 }: {
   initialProducts: Product[];
+  initialSlides: CarouselSlide[];
 }) => {
   const products: Product[] = initialProducts;
 
+  let cardIndex = 0;
   const cards = products.flatMap((product) => {
     const inStoreColors =
       product.colors?.filter((c) => c.inStore === "true") ?? [];
     if (inStoreColors.length === 0) return [];
 
-    return inStoreColors.map((color) => (
-      <ProductCard
-        key={`${product.id}-${color.colorCode}`}
-        {...product}
-        selectedColor={color}
-      />
-    ));
+    return inStoreColors.map((color) => {
+      const priority = cardIndex < 8;
+      cardIndex += 1;
+      return (
+        <ProductCard
+          key={`${product.id}-${color.colorCode}`}
+          {...product}
+          selectedColor={color}
+          priority={priority}
+        />
+      );
+    });
   });
 
   return (
     <>
       <main className="page">
-        <PhotoCarousel />
+        <PhotoCarousel initialSlides={initialSlides} />
         <div className="catalog_title">
           <h1 className="catalog_title-heading">
             Art Nexus — дизайнерская одежда российского бренда

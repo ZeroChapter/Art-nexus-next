@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./informationStyle.css";
 import { PhotoCarousel } from "@/widgets/carusel/PhotoCarousel";
+import { getCarouselSlides } from "@/entities/carousel/api/getCarousel";
 import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://art-nexus.ru";
@@ -29,7 +30,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const carouselSlides = await getCarouselSlides();
   const breadcrumbs = breadcrumbListJsonLd([
     { name: "Главная", item: `${SITE_URL}/` },
     { name: "О бренде", item: `${SITE_URL}/about` },
@@ -41,7 +43,7 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
       />
-      <PhotoCarousel />
+      <PhotoCarousel initialSlides={carouselSlides} />
       <div className="content">
         <div className="void desktop-only">
           <img

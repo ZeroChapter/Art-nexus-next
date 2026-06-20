@@ -1,12 +1,11 @@
 import './BascketStyle.css'
 import { useAppContext } from "../../shared/AppContextProvider.tsx";
-import { useFormatPrice } from '../../entities/hooks/useFormatPrice';
+import { formatPrice } from '@/shared/lib/formatPrice';
 import { useState, useRef } from 'react';
 import { SERVER_URL } from '@/shared/serverConfig';
 
 export const Bascket = () => {
     const { bascet, removeFromBascet, clearBascet } = useAppContext();
-    const formatPrice = useFormatPrice();
     const [phone, setPhone] = useState('');
     const [delivery, setDelivery] = useState('cdek');
     const [isScrolled, setScrolled] = useState(false);

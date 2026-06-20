@@ -67,44 +67,12 @@
   }
 }
 
-@font-face {
-  font-family: 'Graphik';
-  src: url('/assets/fonts/GraphikLCG-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/assets/fonts/GraphikLCG-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/assets/fonts/GraphikLCG-Semibold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/assets/fonts/GraphikLCG-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 .page {
   color: #0B0B0B;
 }
 
 body {
-  font-family: 'Graphik', sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   margin: auto;
   padding: 0;
 }

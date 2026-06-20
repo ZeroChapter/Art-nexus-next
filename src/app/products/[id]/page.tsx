@@ -1,6 +1,7 @@
 import { Product } from "@/entities/product/model/type";
 import ProductPage from "@/pageComponents/productPage/ProductPage";
 import { getGoods } from "@/entities/product/api/getGoods";
+import { pickRecommendations } from "@/entities/product/lib/pickRecommendations";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
@@ -141,7 +142,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
-      <ProductPage initialProduct={product} allProducts={allProducts} />
+      <ProductPage
+        initialProduct={product}
+        recommendations={pickRecommendations(allProducts, id)}
+      />
     </>
   );
 }
