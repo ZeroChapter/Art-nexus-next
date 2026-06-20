@@ -1,42 +1,45 @@
-import { Product } from "@/entities/product/model/type";
-import ProductPage from "@/pageComponents/productPage/ProductPage";
-import { getGoods } from "@/entities/product/api/getGoods";
-import { notFound } from "next/navigation";
-import { Metadata } from "next";
-import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
+import { Product } from '@/entities/product/model/type';
+import ProductPage from '@/pageComponents/productPage/ProductPage';
+import { getGoodById } from '@/entities/product/api/getGoods';
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import { breadcrumbListJsonLd } from '@/shared/seo/jsonLd';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
 
-async function getAllGoods(): Promise<Product[]> {
-  try {
-    return await getGoods();
-  } catch {
-    return [];
+function productDescription(product: Product): string {
+  if (product.description?.length) {
+    return product.description.join(' ');
   }
+  return `Описание товара ${product.name} от бренда Art Nexus.`;
 }
 
-function findProduct(goods: Product[], id: string): Product | null {
-  return goods.find((item) => String(item.id) === String(id)) ?? null;
+function hasStock(product: Product): boolean {
+  return (product.size ?? []).some((s) => s.stock > 0);
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
-  const goods = await getAllGoods();
-  const product = findProduct(goods, id);
+  const data = await getGoodById(id);
 
-  if (!product) {
-    return { title: "Товар не найден | Art Nexus" };
+  if (!data) {
+    return { title: 'Товар не найден | Art Nexus' };
   }
 
+  const { product, relatedProducts } = data;
   const url = `${SITE_URL}/products/${id}`;
-  const description = product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
-  const imageUrl = product.image?.[0]?.[0];
+  const description = productDescription(product);
+  const imageUrl = product.image?.[0];
 
-  const colorNames = (product.colors ?? [])
-    .map((c: Product["colors"][number]) => c.colorName)
+  const colorNames = [product, ...relatedProducts]
+    .map((p) => p.colorName)
     .filter(Boolean);
   const sizeNames = (product.size ?? [])
-    .map((s: Product["size"][number]) => s.name)
+    .map((s) => s.name)
     .filter(Boolean);
 
   return {
@@ -83,28 +86,25 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  const allProducts = await getAllGoods();
-  const product = findProduct(allProducts, id);
+  const data = await getGoodById(id);
 
-  if (!product) {
+  if (!data) {
     notFound();
   }
 
+  const { product, relatedProducts } = data;
   const url = `${SITE_URL}/products/${id}`;
-  const description =
-    product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
-  const images = (product.image ?? [])
-    .map((variant: string[]) => variant?.[0])
-    .filter(Boolean);
-
-  const hasInStock = (product.size ?? []).some(
-    (s: Product["size"][number]) => s.inStore === "true",
-  );
-  const availability = hasInStock
-    ? "https://schema.org/InStock"
-    : "https://schema.org/OutOfStock";
+  const description = productDescription(product);
+  const images = (product.image ?? []).filter(Boolean);
+  const availability = hasStock(product)
+    ? 'https://schema.org/InStock'
+    : 'https://schema.org/OutOfStock';
 
   const breadcrumbs = breadcrumbListJsonLd([
     { name: 'Главная', item: `${SITE_URL}/` },
@@ -117,14 +117,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     name: product.name,
     description,
     image: images,
-    sku: String(product.id),
-    mpn: String(product.id),
+    sku: product.sku,
+    mpn: product.sku,
     brand: { '@type': 'Brand', name: 'Art Nexus' },
     offers: {
       '@type': 'Offer',
       url,
       priceCurrency: 'RUB',
-      price: product.coast,
+      price: product.price,
       availability,
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@type': 'Organization', name: 'Art Nexus' },
@@ -141,7 +141,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
-      <ProductPage initialProduct={product} allProducts={allProducts} />
+      <ProductPage
+        key={product.id}
+        product={product}
+        relatedProducts={relatedProducts}
+      />
     </>
   );
 }

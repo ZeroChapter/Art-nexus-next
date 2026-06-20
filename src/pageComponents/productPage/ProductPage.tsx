@@ -1,177 +1,226 @@
-'use client'
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
-import { useFormatPrice } from "@/entities/hooks/useFormatPrice";
-import { useRecomendation } from '@/entities/hooks/useRocomendation'
-import { ProductCard } from "@/widgets/productCard/ProductCard";
-import { PopUp } from "@/widgets/popup/PopUp";
-import { SizeMessage } from "@/entities/messages/SizeMessage";
-import { useAppContext } from "@/shared/AppContextProvider";
-import { DeliveryMessage } from "@/entities/messages/DeliveryMessage";
-import { CompoundMessage } from "@/entities/messages/CompoundMessage";
-import { Product, ProductColor, ProductSize } from "@/entities/product/model/type";
+import React, { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { PhotoGalerey } from '@/widgets/photoGalerey/PhotoGalerey';
+import { useFormatPrice } from '@/entities/hooks/useFormatPrice';
+import { useRecomendation } from '@/entities/hooks/useRocomendation';
+import { ProductCard } from '@/widgets/productCard/ProductCard';
+import { PopUp } from '@/widgets/popup/PopUp';
+import { SizeMessage } from '@/entities/messages/SizeMessage';
+import { useAppContext } from '@/shared/AppContextProvider';
+import { DeliveryMessage } from '@/entities/messages/DeliveryMessage';
+import { CompoundMessage } from '@/entities/messages/CompoundMessage';
+import { Product, ProductSize } from '@/entities/product/model/type';
+import { getGoods } from '@/entities/product/api/getGoods';
 import './ProductPageStyle.css';
 
 interface ProductPageProps {
-    initialProduct: Product;
-    allProducts: Product[];
+  product: Product;
+  relatedProducts: Product[];
 }
 
-const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, allProducts }) => {
-    const params = useParams<{ id: string }>();
-    const id = params?.id;
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const requestedColorCode = searchParams.get('color');
-    const appliedColorCodeRef = useRef<string | null>(null);
+const ProductPage: React.FC<ProductPageProps> = ({
+  product,
+  relatedProducts,
+}) => {
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
+  const router = useRouter();
 
-    const [activColor, setActivColor] = useState<ProductColor | null>(() =>
-        initialProduct.colors?.find(c => c.inStore === 'true') || null
-    );
-    const [activSize, setActiveSize] = useState<ProductSize | null>(() =>
-        initialProduct.size?.find(s => s.inStore === 'true') || null
-    );
+  const [activSize, setActiveSize] = useState<ProductSize | null>(() =>
+    product.size?.find((s) => s.stock > 0) ?? null,
+  );
+  const [showPopUp, setShowPopUp] = useState<boolean>(false);
+  const [messageComponent, setMessageComponent] = useState<React.ReactNode>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
-    const [showPopUp, setShowPopUp] = useState<boolean>(false);
-    const [messageComponent, setMessageComponent] = useState<React.ReactNode>(null);
+  const formatPrice = useFormatPrice();
+  const getRecomendation = useRecomendation(allProducts);
+  const recomendationCards = getRecomendation(4);
+  const { addToBascet } = useAppContext();
 
-    const formatPrice = useFormatPrice();
-    const getRecomendation = useRecomendation(allProducts);
-    const recomendationCards = getRecomendation(4);
+  const swatches = [product, ...relatedProducts];
 
-    const { addToBascet } = useAppContext();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
 
-    const product = initialProduct;
+  useEffect(() => {
+    getGoods()
+      .then(setAllProducts)
+      .catch(() => setAllProducts([]));
+  }, []);
 
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [id]);
+  const { image, price, name, size, colorName, colorCode, description } = product;
 
-    useEffect(() => {
-        if (!requestedColorCode) return;
-        if (appliedColorCodeRef.current === requestedColorCode) return;
+  const formatSizeName = (name: string) =>
+    name.replace(/([a-z])([A-Z])/g, '$1 $2');
 
-        const match = product.colors?.find((c) => c.colorCode === requestedColorCode) ?? null;
-        if (!match) return;
+  const renderSizeInfo = (sizes: ProductSize[]) => {
+    if (!sizes?.length) return <p className="one_size_string">Размер не указан</p>;
 
-        appliedColorCodeRef.current = requestedColorCode;
-        queueMicrotask(() => setActivColor(match));
-    }, [product, requestedColorCode]);
-
-    const { image, coast, name, size, colors, description } = product;
-
-    const formatSizeName = (name: string) => name.replace(/([a-z])([A-Z])/g, '$1 $2');
-
-    const renderSizeInfo = (sizes: ProductSize[]) => {
-        if (!sizes?.length) return <p className="one_size_string">Размер не указан</p>;
-
-        if (sizes.length === 1) {
-            const isLong = sizes[0].name.length > 3;
-            return (
-                <div className="one_size_string">
-                    <span className="mobile-hidden">Размер:</span>
-                    <div className={`one_size_string-label ${isLong ? 'long-text' : ''}`}>
-                        {formatSizeName(sizes[0].name)}
-                    </div>
-                    <span className="mobile-hidden">(one size)</span>
-                </div>
-            );
-        }
-
-        return (
-            <div className="size_string">
-                {sizes.map((item, index) => {
-                    const isLong = item.name.length > 3;
-                    return (
-                        <button key={index} onClick={() => setActiveSize(item)}
-                            className={`color_item ${activSize?.name === item.name ? 'activColor' : ''} ${item.inStore === 'true' ? '' : 'disable_size'} ${isLong ? 'long-text' : ''}`}>
-                            {formatSizeName(item.name)}
-                        </button>
-                    );
-                })}
-            </div>
-        );
-    };
-
-    const attGoodsToBasket = () => {
-        if (!activColor || !activSize) return;
-        addToBascet({
-            id: product.id, name: product.name, price: coast,
-            selectedSize: activSize, selectedColor: activColor,
-            image: image[activColor.imageIndex][0]
-        });
-    };
+    if (sizes.length === 1) {
+      const isLong = sizes[0].name.length > 3;
+      return (
+        <div className="one_size_string">
+          <span className="mobile-hidden">Размер:</span>
+          <div className={`one_size_string-label ${isLong ? 'long-text' : ''}`}>
+            {formatSizeName(sizes[0].name)}
+          </div>
+          <span className="mobile-hidden">(one size)</span>
+        </div>
+      );
+    }
 
     return (
-        <main className="page product-page">
-            <div className="product-page--content">
-                <button className="arrow_button mobile-visible" onClick={() => router.back()}>
-                    <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><path d="M31 6.70703H2" stroke="black" strokeWidth="2"/><path d="M7.94238 0.707032L2 6.64941L7.94238 12.5918" stroke="black" strokeWidth="2"/></svg>
-                </button>
-
-                <section className="left_block">
-                    <PhotoGalerey key={activColor?.colorCode} images={image[activColor?.imageIndex ?? 0] || []} />
-                </section>
-
-                <section className="right_block">
-                    <button className="arrow_button desctop-visible" onClick={() => router.back()}>
-                        <svg width="42" height="14" viewBox="0 0 42 14" fill="none"><path d="M41.4143 6.70711H1.41431" stroke="currentColor" strokeWidth="2"/><path d="M7.35669 0.707108L1.41431 6.64949L7.35669 12.5919" stroke="currentColor" strokeWidth="2"/></svg>
-                    </button>
-
-                    <article className="content__information_block">
-                        <header className="name_block">
-                            <h1>{name}</h1>
-                            <p className="product-price">{formatPrice(coast)}</p>
-                        </header>
-                        <hr />
-                        <p className="collor_name">{activColor?.colorName || 'Цвет не выбран'}</p>
-                        <div className="collors_button">
-                            {colors.map((item, index) => (
-                                <button key={index} style={{ backgroundColor: item.colorCode }}
-                                    className={`color_item ${item.colorCode === activColor?.colorCode ? 'activColor' : ''} ${item.inStore !== 'true' ? 'disable_color' : ''}`}
-                                    onClick={() => setActivColor(item)} disabled={item.inStore !== 'true'} />
-                            ))}
-                        </div>
-                        <div className="size_container">
-                            <div>{renderSizeInfo(size)}</div>
-                            <button className="size_help" onClick={() => { setMessageComponent(<SizeMessage/>); setShowPopUp(true)}}>
-                                <img src="/icons/helpIcon.svg" alt="Помощь"/> <span>Как выбрать размер</span>
-                            </button>
-                        </div>
-                        <button className="add_btn" onClick={attGoodsToBasket}>Добавить в корзину</button>
-                    </article>
-
-                    <section className="description_block">
-                        <div className="description_block-title">
-                            <button onClick={() => { setMessageComponent(<CompoundMessage prop={product} />); setShowPopUp(true) }}>Состав и уход</button>
-                            <button onClick={() => { setMessageComponent(<DeliveryMessage />); setShowPopUp(true) }}>Доставка</button>
-                        </div>
-                        <p className="paragraf">{description}</p>
-                        <h2 className="recomendation-title">Возможно, вас заинтересует</h2>
-                    </section>
-                </section>
-            </div>
-
-            <section className="recomendation">
-                <div className="recomendation-cards" role="list">
-                    {recomendationCards && recomendationCards.length > 0 ? (
-                        recomendationCards.map((card: Product, index: number) => (
-                            <article key={card.id || index} role="listitem">
-                                <ProductCard {...card} />
-                            </article>
-                        ))
-                    ) : (
-                        <p>Нет рекомендаций</p>
-                    )}
-                </div>
-            </section>
-
-            <PopUp popUpController={showPopUp} onClose={() => setShowPopUp(false)}>
-                {messageComponent}
-            </PopUp>
-        </main>
+      <div className="size_string">
+        {sizes.map((item, index) => {
+          const isLong = item.name.length > 3;
+          return (
+            <button
+              key={index}
+              onClick={() => setActiveSize(item)}
+              className={`color_item ${activSize?.name === item.name ? 'activColor' : ''} ${item.stock > 0 ? '' : 'disable_size'} ${isLong ? 'long-text' : ''}`}
+            >
+              {formatSizeName(item.name)}
+            </button>
+          );
+        })}
+      </div>
     );
+  };
+
+  const attGoodsToBasket = () => {
+    if (!activSize || activSize.stock <= 0) return;
+    addToBascet({
+      id: product.id,
+      name: product.name,
+      price,
+      selectedSize: activSize,
+      selectedColor: { colorName, colorCode },
+      image: image[0] ?? '',
+    });
+  };
+
+  return (
+    <main className="page product-page">
+      <div className="product-page--content">
+        <button className="arrow_button mobile-visible" onClick={() => router.back()}>
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+            <path d="M31 6.70703H2" stroke="black" strokeWidth="2" />
+            <path
+              d="M7.94238 0.707032L2 6.64941L7.94238 12.5918"
+              stroke="black"
+              strokeWidth="2"
+            />
+          </svg>
+        </button>
+
+        <section className="left_block">
+          <PhotoGalerey key={product.id} images={image} />
+        </section>
+
+        <section className="right_block">
+          <button className="arrow_button desctop-visible" onClick={() => router.back()}>
+            <svg width="42" height="14" viewBox="0 0 42 14" fill="none">
+              <path d="M41.4143 6.70711H1.41431" stroke="currentColor" strokeWidth="2" />
+              <path
+                d="M7.35669 0.707108L1.41431 6.64949L7.35669 12.5919"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+            </svg>
+          </button>
+
+          <article className="content__information_block">
+            <header className="name_block">
+              <h1>{name}</h1>
+              <p className="product-price">{formatPrice(price)}</p>
+            </header>
+            <hr />
+            <p className="collor_name">{colorName || 'Цвет не выбран'}</p>
+            <div className="collors_button">
+              {swatches.map((item) => {
+                const inStock = item.size?.some((s) => s.stock > 0);
+                return (
+                  <button
+                    key={item.id}
+                    style={{ backgroundColor: item.colorCode }}
+                    className={`color_item ${item.id === product.id ? 'activColor' : ''} ${inStock ? '' : 'disable_color'}`}
+                    onClick={() => router.push(`/products/${item.id}`)}
+                    disabled={!inStock}
+                    aria-label={item.colorName}
+                  />
+                );
+              })}
+            </div>
+            <div className="size_container">
+              <div>{renderSizeInfo(size)}</div>
+              <button
+                className="size_help"
+                onClick={() => {
+                  setMessageComponent(<SizeMessage />);
+                  setShowPopUp(true);
+                }}
+              >
+                <img src="/icons/helpIcon.svg" alt="Помощь" />{' '}
+                <span>Как выбрать размер</span>
+              </button>
+            </div>
+            <button className="add_btn" onClick={attGoodsToBasket}>
+              Добавить в корзину
+            </button>
+          </article>
+
+          <section className="description_block">
+            <div className="description_block-title">
+              <button
+                onClick={() => {
+                  setMessageComponent(<CompoundMessage prop={product} />);
+                  setShowPopUp(true);
+                }}
+              >
+                Состав и уход
+              </button>
+              <button
+                onClick={() => {
+                  setMessageComponent(<DeliveryMessage />);
+                  setShowPopUp(true);
+                }}
+              >
+                Доставка
+              </button>
+            </div>
+            <div className="paragraf">
+              {description?.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+            <h2 className="recomendation-title">Возможно, вас заинтересует</h2>
+          </section>
+        </section>
+      </div>
+
+      <section className="recomendation">
+        <div className="recomendation-cards" role="list">
+          {recomendationCards && recomendationCards.length > 0 ? (
+            recomendationCards.map((card: Product, index: number) => (
+              <article key={card.id || index} role="listitem">
+                <ProductCard {...card} />
+              </article>
+            ))
+          ) : (
+            <p>Нет рекомендаций</p>
+          )}
+        </div>
+      </section>
+
+      <PopUp popUpController={showPopUp} onClose={() => setShowPopUp(false)}>
+        {messageComponent}
+      </PopUp>
+    </main>
+  );
 };
+
 export default ProductPage;

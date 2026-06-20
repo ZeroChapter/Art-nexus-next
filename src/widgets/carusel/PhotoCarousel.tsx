@@ -7,11 +7,12 @@ import {
   useRef,
   useState,
 } from "react";
+import type { CarouselSlide } from "@/entities/product/model/type";
 import "./PhotoCarouselStyle.css";
 import { SERVER_URL } from "@/shared/serverConfig";
 
 // КЭШ В ПАМЯТИ: данные не будут запрашиваться повторно при переходе по страницам
-let cachedSlides: any[] | null = null;
+let cachedSlides: CarouselSlide[] | null = null;
 let isFetching = false;
 
 const DESKTOP_SCROLL_DURATION_MS = 160_000;
@@ -27,7 +28,7 @@ const wrapTranslate = (x: number, setWidth: number): number => {
 };
 
 export const PhotoCarousel: React.FC = () => {
-  const [slides, setSlides] = useState<any[]>(cachedSlides || []);
+  const [slides, setSlides] = useState<CarouselSlide[]>(cachedSlides || []);
   const [isLoading, setIsLoading] = useState<boolean>(!cachedSlides);
   const [translateX, setTranslateX] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -50,7 +51,7 @@ export const PhotoCarousel: React.FC = () => {
     isFetching = true;
     fetch(`${SERVER_URL}/api/carousel`)
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: CarouselSlide[]) => {
         cachedSlides = data;
         setSlides(data);
         setIsLoading(false);

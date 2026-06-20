@@ -1,21 +1,38 @@
-export interface ProductColor {
-    colorCode: string;
-    colorName: string;
-    inStore: string;
-    imageIndex: number;
-}
-
 export interface ProductSize {
-    name: string;
-    inStore: string;
+  name: string;
+  stock: number;
 }
 
 export interface Product {
-    id: number | string;
-    name: string;
-    coast: number;
-    description: string;
-    image: string[][]; // Массив массивов путей к фото
-    colors: ProductColor[];
-    size: ProductSize[];
+  id: string;
+  groupId: string;
+  sku: string;
+  name: string;
+  price: number;
+  colorName: string;
+  colorCode: string;
+  image: string[];
+  size: ProductSize[];
+  isNew: boolean;
+  compound: string[];
+  care: string[];
+  description: string[];
+  order: number;
+}
+
+export interface SelectedColor {
+  colorName: string;
+  colorCode: string;
+}
+
+export interface GoodByIdResponse {
+  product: Product;
+  relatedProducts: Product[];
+}
+
+export interface CarouselSlide {
+  id: string | number;
+  url: string;
+  alt?: string;
+  title?: string;
 }

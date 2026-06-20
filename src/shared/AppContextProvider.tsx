@@ -8,16 +8,16 @@ import React, {
   useLayoutEffect,
   useRef,
 } from "react";
-import { ProductColor, ProductSize } from "@/entities/product/model/type";
+import { ProductSize, SelectedColor } from "@/entities/product/model/type";
 import { PageToast } from "@/shared/ui/pageToast/PageToast";
 
 // 1. Интерфейс товара в корзине
 export interface BasketItem {
-  id: string | number;
+  id: string;
   name: string;
   price: number;
   selectedSize: ProductSize;
-  selectedColor: ProductColor;
+  selectedColor: SelectedColor;
   image: string;
   quantity: number;
   uniqueId: number;
@@ -29,8 +29,8 @@ interface AppContextType {
   setBascetStore: (arr: BasketItem[]) => void;
   addToBascet: (product: Omit<BasketItem, 'quantity' | 'uniqueId'>) => void;
   removeFromBascet: (indexOrId: number) => void;
-  removeSpecificItem: (productId: string | number, selectedSize: ProductSize, selectedColor: ProductColor) => void;
-  removeAllByParams: (productId: string | number, selectedSize: ProductSize, selectedColor: ProductColor) => void;
+  removeSpecificItem: (productId: string, selectedSize: ProductSize, selectedColor: SelectedColor) => void;
+  removeAllByParams: (productId: string, selectedSize: ProductSize, selectedColor: SelectedColor) => void;
   decrementQuantity: (index: number) => void;
   clearBascet: () => void;
   toast: { name: string; image: string; price: number } | null;
@@ -40,7 +40,7 @@ interface AppContextType {
 
 const Context = createContext<AppContextType | null>(null);
 
-const BASKET_STORAGE_KEY = "art-nexus-basket-v1";
+const BASKET_STORAGE_KEY = "art-nexus-basket-v2";
 
 function readBasketFromLocalStorage(): BasketItem[] | null {
   if (typeof window === "undefined") return null;
@@ -154,7 +154,7 @@ export const useCreateAppContext = (props: BasketItem[]): AppContextType => {
     );
   }, []);
 
-  const removeSpecificItem = useCallback((productId: string | number, selectedSize: ProductSize, selectedColor: ProductColor) => {
+  const removeSpecificItem = useCallback((productId: string, selectedSize: ProductSize, selectedColor: SelectedColor) => {
     setBascet(prevBascet => {
       const indexToRemove = prevBascet.findIndex(
         item => item.id === productId && 
@@ -169,7 +169,7 @@ export const useCreateAppContext = (props: BasketItem[]): AppContextType => {
     });
   }, []);
 
-  const removeAllByParams = useCallback((productId: string | number, selectedSize: ProductSize, selectedColor: ProductColor) => {
+  const removeAllByParams = useCallback((productId: string, selectedSize: ProductSize, selectedColor: SelectedColor) => {
     setBascet(prevBascet => 
       prevBascet.filter(item => 
         !(item.id === productId && 

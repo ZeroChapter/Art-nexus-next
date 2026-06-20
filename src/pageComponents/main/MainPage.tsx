@@ -11,21 +11,10 @@ export const MainPage = ({
 }: {
   initialProducts: Product[];
 }) => {
-  const products: Product[] = initialProducts;
-
-  const cards = products.flatMap((product) => {
-    const inStoreColors =
-      product.colors?.filter((c) => c.inStore === "true") ?? [];
-    if (inStoreColors.length === 0) return [];
-
-    return inStoreColors.map((color) => (
-      <ProductCard
-        key={`${product.id}-${color.colorCode}`}
-        {...product}
-        selectedColor={color}
-      />
-    ));
-  });
+  // Временно показываем все товары без группировки и фильтра наличия.
+  const cards = initialProducts.map((product) => (
+    <ProductCard key={product.id} {...product} colorCount={1} />
+  ));
 
   return (
     <>

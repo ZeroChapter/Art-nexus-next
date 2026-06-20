@@ -9,7 +9,7 @@ const API_URL = process.env.API_INTERNAL_URL ?? SITE_URL;
 // Sitemap пересобирается раз в час — не дёргаем API на каждый запрос бота.
 export const revalidate = 3600;
 
-async function safeGetProducts(): Promise<Array<{ id: string | number }>> {
+async function safeGetProducts(): Promise<Array<{ id: string }>> {
   try {
     const res = await fetch(`${API_URL}/api/goods`, {
       next: { revalidate: 3600 },

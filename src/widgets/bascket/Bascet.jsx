@@ -67,7 +67,13 @@ export const Bascket = () => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const orderData = {
-            items: bascet,
+            items: bascet.map(({ id, name, price, selectedSize, selectedColor }) => ({
+                id,
+                name,
+                price,
+                selectedSize: { name: selectedSize.name },
+                selectedColor: { colorName: selectedColor.colorName },
+            })),
             totalPrice: summPrice(),
             customerName: formData.get('name') || 'Не указано',
             phone: phone,
