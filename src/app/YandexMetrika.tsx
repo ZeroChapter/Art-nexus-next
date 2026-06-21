@@ -17,9 +17,6 @@ export function YandexMetrikaScript({ counterId }: YandexMetrikaScriptProps) {
       <Script
         id="yandex-metrika"
         strategy="afterInteractive"
-        onLoad={() => {
-          window.dispatchEvent(new Event("yandex-metrika-ready"));
-        }}
         dangerouslySetInnerHTML={{
           __html: `
             (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -33,6 +30,7 @@ export function YandexMetrikaScript({ counterId }: YandexMetrikaScriptProps) {
               accurateTrackBounce:true,
               webvisor:false
             });
+            window.dispatchEvent(new Event("yandex-metrika-ready"));
           `,
         }}
       />
