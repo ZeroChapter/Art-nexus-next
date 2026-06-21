@@ -7,6 +7,9 @@ import { Footer } from "@/widgets/footer/Footer";
 import { getYandexMetrikaId, YandexMetrikaScript } from "./YandexMetrika";
 import { YandexMetrikaHits } from "./YandexMetrikaHits";
 import { Suspense } from "react"; // Импортируем Suspense
+import { PAGE_REVALIDATE_SECONDS } from "@/shared/cacheConfig";
+
+export const revalidate = PAGE_REVALIDATE_SECONDS;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://art-nexus.ru"),
