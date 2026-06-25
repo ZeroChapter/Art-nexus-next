@@ -7,12 +7,9 @@ import {
   useRef,
   useState,
 } from "react";
+import Image from "next/image";
 import "./PhotoCarouselStyle.css";
-import { SERVER_URL } from "@/shared/serverConfig";
 import type { CarouselSlide } from "@/entities/carousel/api/getCarousel";
-
-let cachedSlides: CarouselSlide[] | null = null;
-let isFetching = false;
 
 const DESKTOP_SCROLL_DURATION_MS = 160_000;
 const MOBILE_SCROLL_DURATION_MS = 100_000;
@@ -33,15 +30,13 @@ interface PhotoCarouselProps {
 export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
   initialSlides = [],
 }) => {
-  const [slides, setSlides] = useState<CarouselSlide[]>(
-    () => cachedSlides ?? initialSlides,
-  );
-  const [isLoading, setIsLoading] = useState<boolean>(
-    () => !cachedSlides && initialSlides.length === 0,
-  );
+  const [slides] = useState<CarouselSlide[]>(initialSlides);
   const [translateX, setTranslateX] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [isPageVisible, setIsPageVisible] = useState<boolean>(true);
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const setWidthRef = useRef<number>(0);
   const translateXRef = useRef<number>(0);
@@ -53,39 +48,32 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
   translateXRef.current = translateX;
 
   useEffect(() => {
-    if (initialSlides.length > 0 && !cachedSlides) {
-      cachedSlides = initialSlides;
-      setSlides(initialSlides);
-      setIsLoading(false);
-    }
-  }, [initialSlides]);
-
-  useEffect(() => {
-    if (cachedSlides || initialSlides.length > 0) return;
-    if (isFetching) return;
-
-    isFetching = true;
-    fetch(`${SERVER_URL}/api/carousel`)
-      .then((res) => res.json())
-      .then((data: CarouselSlide[]) => {
-        cachedSlides = data;
-        setSlides(data);
-        setIsLoading(false);
-        isFetching = false;
-      })
-      .catch((err) => {
-        console.error("Ошибка загрузки карусели:", err);
-        setIsLoading(false);
-        isFetching = false;
-      });
-  }, [initialSlides.length]);
-
-  useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
     setIsMobile(mql.matches);
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    const onVisibilityChange = () => {
+      setIsPageVisible(document.visibilityState === "visible");
+    };
+    onVisibilityChange();
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
+  }, []);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { rootMargin: "100px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const updateSetWidth = useCallback(function measureSetWidth() {
@@ -99,7 +87,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
   }, []);
 
   useLayoutEffect(() => {
-    if (isLoading || slides.length === 0) return;
+    if (slides.length === 0) return;
 
     const el = trackRef.current;
     if (!el) return;
@@ -108,18 +96,24 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     const ro = new ResizeObserver(() => updateSetWidth());
     ro.observe(el);
     return () => ro.disconnect();
-  }, [updateSetWidth, slides.length, isLoading]);
+  }, [updateSetWidth, slides.length]);
 
   useEffect(() => {
-    if (isLoading || slides.length === 0) return;
+    if (slides.length === 0) return;
 
     let last = performance.now();
     const tick = (now: number) => {
       const dt = now - last;
       last = now;
       const w = setWidthRef.current;
+      const shouldAnimate =
+        isPageVisible &&
+        isVisible &&
+        w > 0 &&
+        !isDraggingRef.current &&
+        !isHoveredRef.current;
 
-      if (w > 0 && !isDraggingRef.current && !isHoveredRef.current) {
+      if (shouldAnimate) {
         const duration = isMobile
           ? MOBILE_SCROLL_DURATION_MS
           : DESKTOP_SCROLL_DURATION_MS;
@@ -130,7 +124,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [isMobile, isLoading, slides.length]);
+  }, [isMobile, isPageVisible, isVisible, slides.length]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== undefined && e.button !== 0) return;
@@ -156,7 +150,6 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     isDraggingRef.current = false;
   };
 
-  if (isLoading) return <div className="carousel-loader">Загрузка...</div>;
   if (slides.length === 0) return null;
 
   const renderSlides = (setIndex: 0 | 1) =>
@@ -167,21 +160,24 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
         slide.title ||
         `Коллекция Art Nexus — дизайнерская одежда${slide.id != null ? ` (${slide.id})` : ""}`;
       return (
-        <img
+        <Image
           key={`${setIndex}-${slide.id ?? idx}`}
           src={slide.url}
           alt={alt}
+          width={600}
+          height={400}
           className="carousel-image"
           draggable={false}
-          loading={isAboveFold ? "eager" : "lazy"}
-          fetchPriority={isAboveFold ? "high" : "auto"}
-          decoding="async"
+          priority={isAboveFold}
+          loading={isAboveFold ? undefined : "lazy"}
+          sizes="(max-width: 768px) 100vw, 600px"
         />
       );
     });
 
   return (
     <div
+      ref={wrapperRef}
       className="carousel-wrapper"
       onMouseEnter={() => {
         isHoveredRef.current = true;

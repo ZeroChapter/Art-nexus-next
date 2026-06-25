@@ -17,7 +17,9 @@
 .baner_image {
   width: 415px;
   height: 300px;
-  object-fit: cover;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
 }
 
 .baner_text {
@@ -76,6 +78,11 @@
     margin: 10px 0 30px;
     max-width: 100%;
     padding: 10px 20px 0 20px;
+  }
+
+  .baner_image {
+    width: 100%;
+    height: 220px;
   }
 
   .baner_text-title {

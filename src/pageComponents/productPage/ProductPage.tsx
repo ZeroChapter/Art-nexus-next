@@ -5,14 +5,10 @@ import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { formatPrice } from "@/shared/lib/formatPrice";
 import { ProductCard } from "@/widgets/productCard/ProductCard";
+import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
 import { useAppContext } from "@/shared/AppContextProvider";
 import { Product, ProductColor, ProductSize } from "@/entities/product/model/type";
 import './ProductPageStyle.css';
-
-const PhotoGalerey = dynamic(
-  () => import("@/widgets/photoGalerey/PhotoGalerey").then((m) => m.PhotoGalerey),
-  { ssr: false, loading: () => <div className="gallery-placeholder" aria-hidden="true" /> },
-);
 
 const PopUp = dynamic(
   () => import("@/widgets/popup/PopUp").then((m) => m.PopUp),
@@ -111,12 +107,16 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendatio
         );
     };
 
+    const colorImageIndex = activColor
+        ? Number(activColor.imageIndex)
+        : 0;
+
     const attGoodsToBasket = () => {
         if (!activColor || !activSize) return;
         addToBascet({
             id: product.id, name: product.name, price: coast,
             selectedSize: activSize, selectedColor: activColor,
-            image: image[activColor.imageIndex][0]
+            image: image[colorImageIndex]?.[0] ?? image[0]?.[0] ?? '',
         });
     };
 
@@ -128,7 +128,11 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendatio
                 </button>
 
                 <section className="left_block">
-                    <PhotoGalerey key={activColor?.colorCode} images={image[activColor?.imageIndex ?? 0] || []} />
+                    <PhotoGalerey
+                        key={activColor?.colorCode}
+                        productName={name}
+                        images={image[colorImageIndex] || []}
+                    />
                 </section>
 
                 <section className="right_block">

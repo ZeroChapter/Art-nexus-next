@@ -9,7 +9,7 @@ export const revalidate = 3600;
 
 async function safeGetProducts(): Promise<Array<{ id: string | number }>> {
   try {
-    const res = await fetch(`${API_URL}/api/goods`, {
+    const res = await fetch(`${API_URL}/api/goods/list`, {
       next: { revalidate: CATALOG_REVALIDATE_SECONDS },
     });
     if (!res.ok) return [];
@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const products = await safeGetProducts();
   const productRoutes: MetadataRoute.Sitemap = products.map((p) => ({
-    url: `${SITE_URL}/products/${p.id}`,
+    url: `${SITE_URL}/products/${encodeURIComponent(String(p.id))}`,
     lastModified: now,
     changeFrequency: 'weekly',
     priority: 0.7,

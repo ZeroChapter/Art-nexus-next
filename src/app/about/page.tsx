@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import "./informationStyle.css";
 import { PhotoCarousel } from "@/widgets/carusel/PhotoCarousel";
 import { getCarouselSlides } from "@/entities/carousel/api/getCarousel";
@@ -46,10 +47,14 @@ export default async function AboutPage() {
       <PhotoCarousel initialSlides={carouselSlides} />
       <div className="content">
         <div className="void desktop-only">
-          <img
+          <Image
             src="https://i.pinimg.com/736x/d0/22/ce/d022ce6156ae0313d899aefe0a6c5b79.jpg"
             alt="Фотография рук влюбленных с татуировкой узел"
             className="about-omage"
+            width={736}
+            height={920}
+            sizes="50vw"
+            style={{ width: "100%", height: "auto" }}
           />
         </div>
 
@@ -90,10 +95,14 @@ export default async function AboutPage() {
           </article>
 
           <div className="mobile-only">
-            <img
+            <Image
               src="https://i.pinimg.com/736x/d0/22/ce/d022ce6156ae0313d899aefe0a6c5b79.jpg"
               alt="Фотография рук влюбленных"
               className="about-omage-mobile"
+              width={736}
+              height={920}
+              sizes="100vw"
+              style={{ width: "100%", height: "auto" }}
             />
           </div>
 

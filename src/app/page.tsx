@@ -1,5 +1,5 @@
 import { MainPage } from "@/pageComponents/main/MainPage";
-import { getGoods } from "@/entities/product/api/getGoods";
+import { getGoodsList } from "@/entities/product/api/getGoods";
 import { getCarouselSlides } from "@/entities/carousel/api/getCarousel";
 import { Metadata } from "next";
 import { Product } from "@/entities/product/model/type";
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const [products, carouselSlides] = await Promise.all([
-    getGoods() as Promise<Product[]>,
+    getGoodsList() as Promise<Product[]>,
     getCarouselSlides(),
   ]);
   const siteUrl = "https://art-nexus.ru";

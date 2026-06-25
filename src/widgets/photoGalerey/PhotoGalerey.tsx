@@ -1,23 +1,23 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import './PhotoGalereyStyle.css';
 import DotIcon from "@/shared/tsxIcons/DotIcon";
 import { PopUp } from "@/widgets/popup/PopUp";
 
 interface PhotoGalereyProps {
     images?: string[];
+    productName?: string;
 }
 
-export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
+export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [], productName = 'Товар' }) => {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [lightboxOpen, setLightboxOpen] = useState(false);
 
     const touchStartXRef = useRef<number | null>(null);
     const touchStartYRef = useRef<number | null>(null);
     const imagesCount = images?.length ?? 0;
-    
-    // ЭФФЕКТ УДАЛЕН. Индекс теперь сбрасывается через key в родителе.
 
     const goPrev = useCallback(() => {
         if (imagesCount <= 0) return;
@@ -69,7 +69,6 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
         const dx = endX - startX;
         const dy = endY - startY;
 
-        // Считаем свайпом только выраженное горизонтальное движение
         if (Math.abs(dx) < 40) return;
         if (Math.abs(dx) < Math.abs(dy) * 1.2) return;
 
@@ -80,6 +79,8 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
     if (!images || imagesCount === 0) {
         return null;
     }
+
+    const currentAlt = `${productName} — фото ${currentIndex + 1}`;
 
     return (
         <div className="galerey">
@@ -108,7 +109,7 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
                         </button>
                     )}
 
-                    <img src={images[currentIndex]} alt={`Фото товара ${currentIndex + 1}`} />
+                    <img src={images[currentIndex]} alt={currentAlt} />
 
                     {imagesCount > 1 && (
                         <button
@@ -138,17 +139,30 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
                 }}
                 aria-label="Открыть фото на весь экран"
             >
-                <img src={images[currentIndex]} alt={`Фото товара ${currentIndex + 1}`} />
+                <Image
+                    src={images[currentIndex]}
+                    alt={currentAlt}
+                    width={577}
+                    height={629}
+                    priority={currentIndex === 0}
+                    sizes="(max-width: 768px) 100vw, 577px"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', pointerEvents: 'none' }}
+                />
             </div>
-            
+
             <div className="galerey-pictures">
                 {images.map((image, index) => (
                     <div className="miniature" key={index}>
-                        <img 
-                            src={image} 
-                            alt={`Миниатюра фото ${index + 1}`}
+                        <Image
+                            src={image}
+                            alt={`${productName} — миниатюра ${index + 1}`}
+                            width={112}
+                            height={150}
+                            loading="lazy"
+                            sizes="112px"
                             className={index === currentIndex ? 'active' : ''}
-                            onClick={() => setCurrentIndex(index)} 
+                            onClick={() => setCurrentIndex(index)}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', cursor: 'pointer' }}
                         />
                     </div>
                 ))}
@@ -157,8 +171,8 @@ export const PhotoGalerey: React.FC<PhotoGalereyProps> = ({ images = [] }) => {
             {images.length > 5 && (
                 <div className="dot-menu">
                     {images.map((_, index) => (
-                        <DotIcon 
-                            key={index} 
+                        <DotIcon
+                            key={index}
                             fill={index === currentIndex ? '#000000' : '#CCCCCC'}
                             onClick={() => setCurrentIndex(index)}
                         />

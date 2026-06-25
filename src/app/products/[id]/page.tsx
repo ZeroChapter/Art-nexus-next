@@ -1,35 +1,42 @@
+import { cache } from 'react';
 import { Product } from "@/entities/product/model/type";
 import ProductPage from "@/pageComponents/productPage/ProductPage";
-import { getGoods } from "@/entities/product/api/getGoods";
-import { pickRecommendations } from "@/entities/product/lib/pickRecommendations";
+import { getProductById, getGoodsList } from "@/entities/product/api/getGoods";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
 
-async function getAllGoods(): Promise<Product[]> {
+const loadProduct = cache(async (id: string) => {
   try {
-    return await getGoods();
+    return await getProductById(id);
+  } catch {
+    return null;
+  }
+});
+
+export async function generateStaticParams() {
+  try {
+    const products = await getGoodsList();
+    return products.map((product) => ({
+      id: String(product.id),
+    }));
   } catch {
     return [];
   }
 }
 
-function findProduct(goods: Product[], id: string): Product | null {
-  return goods.find((item) => String(item.id) === String(id)) ?? null;
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const goods = await getAllGoods();
-  const product = findProduct(goods, id);
+  const data = await loadProduct(id);
+  const product = data?.product;
 
   if (!product) {
     return { title: "Товар не найден | Art Nexus" };
   }
 
-  const url = `${SITE_URL}/products/${id}`;
+  const url = `${SITE_URL}/products/${encodeURIComponent(id)}`;
   const description = product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
   const imageUrl = product.image?.[0]?.[0];
 
@@ -86,14 +93,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const allProducts = await getAllGoods();
-  const product = findProduct(allProducts, id);
+  const data = await loadProduct(id);
 
-  if (!product) {
+  if (!data) {
     notFound();
   }
 
-  const url = `${SITE_URL}/products/${id}`;
+  const { product, relatedProducts } = data;
+  const url = `${SITE_URL}/products/${encodeURIComponent(id)}`;
   const description =
     product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
   const images = (product.image ?? [])
@@ -144,7 +151,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       />
       <ProductPage
         initialProduct={product}
-        recommendations={pickRecommendations(allProducts, id)}
+        recommendations={relatedProducts}
       />
     </>
   );
