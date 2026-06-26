@@ -37,6 +37,27 @@ npm run build
 npm start
 ```
 
+## Production deploy (server)
+
+Host nginx proxies `art-nexus.ru` to Next.js on port `3001` and `/api/*` to the backend on `3000`.
+
+Example `.env` on the server:
+
+```env
+NEXT_PUBLIC_SITE_URL=https://art-nexus.ru
+NEXT_PUBLIC_API_URL=https://art-nexus.ru
+API_INTERNAL_URL=http://127.0.0.1:3000
+NEXT_PUBLIC_YANDEX_METRIKA_ID=your_counter_id
+PORT=3001
+```
+
+Deploy or redeploy:
+
+```bash
+chmod +x scripts/deploy-next.sh
+./scripts/deploy-next.sh
+```
+
 ## Security
 
 - No secrets in source — configuration via `.env`

@@ -37,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     : -1;
 
   const previewImageByIndex =
-    effectiveColor && effectiveColor.imageIndex != null && effectiveColor.imageIndex !== ''
+    effectiveColor && effectiveColor.imageIndex != null
       ? image?.[Number(effectiveColor.imageIndex)]?.[0]
       : undefined;
 

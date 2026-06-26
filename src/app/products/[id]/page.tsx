@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 import { Product } from "@/entities/product/model/type";
 import ProductPage from "@/pageComponents/productPage/ProductPage";
 import { getProductById, getGoodsList } from "@/entities/product/api/getGoods";
@@ -149,10 +149,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
-      <ProductPage
-        initialProduct={product}
-        recommendations={relatedProducts}
-      />
+      <Suspense fallback={null}>
+        <ProductPage
+          initialProduct={product}
+          recommendations={relatedProducts}
+        />
+      </Suspense>
     </>
   );
 }
