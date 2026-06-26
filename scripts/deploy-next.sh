@@ -21,7 +21,8 @@ set -a
 set +a
 npm run build
 
-echo "=== restart next on :3001 ==="
+echo "=== restart next on :${PORT:-3001} ==="
+fuser -k "${PORT:-3001}"/tcp 2>/dev/null || true
 pkill -f "next start" 2>/dev/null || true
 pkill -f "next-server" 2>/dev/null || true
 sleep 2
