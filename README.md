@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Art Nexus — storefront
 
-## Getting Started
+Next.js 16 public website for [Art Nexus](https://art-nexus.ru).
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router), React 19, TypeScript
+- Server-side catalog fetching, `next/image`, JSON-LD
+
+## Quick start
 
 ```bash
+cp .env.example .env
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requires the [backend API](../Art-nexus-back) running on port 5000 (or set URLs in `.env`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_SITE_URL` | Public site URL (SEO, sitemap) |
+| `NEXT_PUBLIC_API_URL` | API URL for client-side requests |
+| `API_INTERNAL_URL` | API URL for SSR (Docker / server) |
+| `NEXT_PUBLIC_YANDEX_METRIKA_ID` | Yandex.Metrika counter |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Google Search Console |
+| `NEXT_PUBLIC_YANDEX_VERIFICATION` | Yandex Webmaster |
 
-## Learn More
+## Build
 
-To learn more about Next.js, take a look at the following resources:
+MongoDB and the API must be reachable at build time if pages are statically generated:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Production deploy (server)
 
-## Deploy on Vercel
+Host nginx proxies `art-nexus.ru` to Next.js on port `3001` and `/api/*` to the backend on `3000`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Example `.env` on the server:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+NEXT_PUBLIC_SITE_URL=https://art-nexus.ru
+NEXT_PUBLIC_API_URL=https://art-nexus.ru
+API_INTERNAL_URL=http://127.0.0.1:3000
+NEXT_PUBLIC_YANDEX_METRIKA_ID=your_counter_id
+PORT=3001
+```
+
+Deploy or redeploy:
+
+```bash
+chmod +x scripts/deploy-next.sh
+./scripts/deploy-next.sh
+```
+
+## Security
+
+- No secrets in source — configuration via `.env`
+- Read-only access to the catalog API; orders use public `POST /api/orders`
+- Admin CRUD is protected by `ADMIN_API_KEY` on the backend (admin panel only)
+
+## Related repos
+
+- **Art-nexus-back** — Express API
+- **ArtNexusAdmin** — local admin panel (Vite + React)

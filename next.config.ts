@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.1.121"],
   reactCompiler: true,
   images: {
     remotePatterns: [
@@ -9,6 +8,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.pinimg.com" },
       { protocol: "https", hostname: "art-nexus.ru" },
       { protocol: "https", hostname: "**.art-nexus.ru" },
+      { protocol: "http", hostname: "localhost", port: "5000", pathname: "/uploads/**" },
+      { protocol: "http", hostname: "127.0.0.1", port: "5000", pathname: "/uploads/**" },
     ],
   },
   async headers() {

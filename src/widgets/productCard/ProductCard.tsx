@@ -27,17 +27,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     backgroundColor: effectiveColor?.colorCode || "#ccc",
   };
 
+  const productPath = `/products/${encodeURIComponent(String(id))}`;
   const href = effectiveColor?.colorCode
-    ? `/products/${id}?color=${encodeURIComponent(effectiveColor.colorCode)}`
-    : `/products/${id}`;
+    ? `${productPath}?color=${encodeURIComponent(effectiveColor.colorCode)}`
+    : productPath;
 
   const colorIndexByOrder = effectiveColor?.colorCode
     ? (colors ?? []).findIndex((c) => c.colorCode === effectiveColor.colorCode)
     : -1;
 
   const previewImageByIndex =
-    effectiveColor && typeof effectiveColor.imageIndex === "number"
-      ? image?.[effectiveColor.imageIndex]?.[0]
+    effectiveColor && effectiveColor.imageIndex != null
+      ? image?.[Number(effectiveColor.imageIndex)]?.[0]
       : undefined;
 
   const previewImageByOrder =

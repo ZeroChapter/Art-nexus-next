@@ -1,11 +1,22 @@
+'use client';
+
+import dynamic from "next/dynamic";
 import { PhotoCarousel } from "../../widgets/carusel/PhotoCarousel";
 import "./MainPageStyle.css";
 import { ProductCard } from "../../widgets/productCard/ProductCard";
 import { Baner } from "../../widgets/baners/Baner";
-import { PopUp } from "../../widgets/popup/PopUp";
-import { SizeMessage } from "../../entities/messages/SizeMessage";
 import { Product } from "@/entities/product/model/type";
 import { CarouselSlide } from "@/entities/carousel/api/getCarousel";
+
+const PopUp = dynamic(
+  () => import("../../widgets/popup/PopUp").then((m) => m.PopUp),
+  { ssr: false },
+);
+
+const SizeMessage = dynamic(
+  () => import("../../entities/messages/SizeMessage").then((m) => m.SizeMessage),
+  { ssr: false },
+);
 
 export const MainPage = ({
   initialProducts,
