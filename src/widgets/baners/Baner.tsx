@@ -6,8 +6,8 @@ export const Baner = () => {
     <div className="baner">
       <div className="baner_image">
         <Image
-          alt="Девушка в жемчужной маске гонит гусей"
-          src="https://i.pinimg.com/736x/21/78/a0/2178a0e8dee4eb2eceb9751130671d57.jpg"
+          alt="Детали дизайнерской одежды Art Nexus на фоне зелёной травы"
+          src="/bannerImage.jpg"
           fill
           sizes="415px"
           style={{ objectFit: "cover", objectPosition: "top" }}
