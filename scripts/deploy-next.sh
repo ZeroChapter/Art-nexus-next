@@ -10,8 +10,11 @@ fi
 
 cd "$(dirname "$0")/.."
 
+
 echo "=== git pull ==="
-git pull --ff-only
+git fetch origin
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+git reset --hard "origin/${BRANCH}"
 
 echo "=== node $(node -v) ==="
 echo "=== npm install ==="
@@ -22,6 +25,7 @@ export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=1024}"
 set -a
 . ./.env
 set +a
+rm -rf .next/cache/images
 npm run build
 
 echo "=== restart next on :${PORT:-3001} ==="

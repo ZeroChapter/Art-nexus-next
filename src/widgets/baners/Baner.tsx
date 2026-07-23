@@ -1,4 +1,5 @@
 import Image from "next/image";
+import bannerImage from "@/assets/bannerImage.jpg";
 import "./Baner.css";
 
 export const Baner = () => {
@@ -7,7 +8,7 @@ export const Baner = () => {
       <div className="baner_image">
         <Image
           alt="Детали дизайнерской одежды Art Nexus на фоне зелёной травы"
-          src="/bannerImage.jpg"
+          src={bannerImage}
           fill
           sizes="415px"
           style={{ objectFit: "cover", objectPosition: "top" }}

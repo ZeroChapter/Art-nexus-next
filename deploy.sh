@@ -20,7 +20,9 @@ set -euo pipefail
 cd "$APP_DIR"
 
 echo "--- 1. Обновление кода ---"
-git pull --ff-only
+git fetch origin
+BRANCH="\$(git rev-parse --abbrev-ref HEAD)"
+git reset --hard "origin/\${BRANCH}"
 
 echo "--- 2. Бэкап старых static-chunks (для пользователей с закешированным HTML) ---"
 STATIC_BACKUP=""
@@ -30,6 +32,7 @@ if [ -d .next/static ]; then
 fi
 
 echo "--- 3. Сборка ---"
+rm -rf .next/cache/images
 npm run build
 
 echo "--- 4. Слияние старых chunks (не перезаписываем новые) ---"
@@ -59,7 +62,9 @@ if [[ "${1:-}" == "--local" ]]; then
   APP_DIR="$(pwd)"
 
   echo "--- 1. Обновление кода ---"
-  git pull --ff-only
+  git fetch origin
+  BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+  git reset --hard "origin/${BRANCH}"
 
   STATIC_BACKUP=""
   if [ -d .next/static ]; then
@@ -67,6 +72,7 @@ if [[ "${1:-}" == "--local" ]]; then
     cp -a .next/static/. "$STATIC_BACKUP/"
   fi
 
+  rm -rf .next/cache/images
   npm run build
 
   if [ -n "$STATIC_BACKUP" ]; then
