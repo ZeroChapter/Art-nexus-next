@@ -10,6 +10,9 @@ fi
 
 cd "$(dirname "$0")/.."
 
+echo "=== git pull ==="
+git pull --ff-only
+
 echo "=== node $(node -v) ==="
 echo "=== npm install ==="
 npm install

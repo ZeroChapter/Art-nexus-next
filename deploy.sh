@@ -19,23 +19,26 @@ run_on_server() {
 set -euo pipefail
 cd "$APP_DIR"
 
-echo "--- 1. Бэкап старых static-chunks (для пользователей с закешированным HTML) ---"
+echo "--- 1. Обновление кода ---"
+git pull --ff-only
+
+echo "--- 2. Бэкап старых static-chunks (для пользователей с закешированным HTML) ---"
 STATIC_BACKUP=""
 if [ -d .next/static ]; then
   STATIC_BACKUP=\$(mktemp -d)
   cp -a .next/static/. "\$STATIC_BACKUP/"
 fi
 
-echo "--- 2. Сборка ---"
+echo "--- 3. Сборка ---"
 npm run build
 
-echo "--- 3. Слияние старых chunks (не перезаписываем новые) ---"
+echo "--- 4. Слияние старых chunks (не перезаписываем новые) ---"
 if [ -n "\$STATIC_BACKUP" ]; then
   cp -an "\$STATIC_BACKUP"/. .next/static/ 2>/dev/null || cp -a "\$STATIC_BACKUP"/. .next/static/
   rm -rf "\$STATIC_BACKUP"
 fi
 
-echo "--- 4. Перезапуск pm2 ---"
+echo "--- 5. Перезапуск pm2 ---"
 if ${PM2} describe art-nexus-next >/dev/null 2>&1; then
   ${PM2} restart art-nexus-next
 else
@@ -43,7 +46,7 @@ else
   ${PM2} save
 fi
 
-echo "--- 5. Проверка ---"
+echo "--- 6. Проверка ---"
 sleep 2
 curl -sf -o /dev/null -w "HTTP %{http_code} за %{time_total}s\n" http://127.0.0.1:3001/
 echo "--- Деплой завершён ---"
@@ -54,6 +57,9 @@ if [[ "${1:-}" == "--local" ]]; then
   export PATH="${NODE_BIN}:$PATH"
   cd "$(dirname "$0")"
   APP_DIR="$(pwd)"
+
+  echo "--- 1. Обновление кода ---"
+  git pull --ff-only
 
   STATIC_BACKUP=""
   if [ -d .next/static ]; then
