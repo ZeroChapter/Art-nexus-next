@@ -1,5 +1,5 @@
 import Image from "next/image";
-import bannerImage from "@/assets/bannerImage.jpg";
+import bannerImage from "@/assets/bannerImage2.png";
 import "./Baner.css";
 
 export const Baner = () => {
