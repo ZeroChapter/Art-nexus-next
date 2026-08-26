@@ -71,14 +71,16 @@
 @media (max-width: 768px) {
   .baner {
     flex-direction: column;
+    height: auto;
     /* 20px слева/справа: margin НЕ уменьшает width:100%, поэтому считаем ширину явно */
     width: calc(100% - 40px);
     max-width: none;
-    max-height: 1000px;
+    max-height: none;
     margin: 0 auto 30px;
     padding: 0;
     box-sizing: border-box;
     overflow-x: clip;
+    overflow-y: visible;
   }
 
   .baner_text {

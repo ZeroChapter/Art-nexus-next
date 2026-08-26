@@ -33,6 +33,7 @@
 .description_container {
   display: grid;
   grid-template-columns: auto 50px;
+  align-items: center;
   margin-top: 10px;
   width: 100%;
   font-size: var(--size-12);
@@ -72,6 +73,7 @@ p {
   display: flex;
   justify-content: end;
   flex-direction: row;
+  align-items: center;
   font-weight: 400;
 }
 
@@ -80,6 +82,8 @@ p {
   height: 10px;
   margin: 0 5px;
   border: 1px solid #000000;
+  position: relative;
+  top: -5px;
 }
 
 .mew_lable {
