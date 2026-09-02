@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
 }
 
 .catalog_title-heading {
@@ -119,10 +121,14 @@
   }
   .page {
     margin-top: 0;
+    align-items: stretch;
+    overflow-x: clip;
   }
   .catalog_title {
     margin: auto;
-    padding: 40px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 24px 20px;
 
     h1 {
       letter-spacing: 1px;
@@ -130,6 +136,10 @@
       text-align: center;
       font-size: var(--size-20);
       font-weight: 500;
+      max-width: 100%;
     }
+  }
+  .catalog_title-heading {
+    max-width: 100%;
   }
 }

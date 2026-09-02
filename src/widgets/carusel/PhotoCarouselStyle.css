@@ -1,7 +1,9 @@
 .carousel-wrapper {
     width: 100%;
+    max-width: 100%;
     height: 400px;
     overflow: hidden;
+    overflow-x: clip;
     position: relative;
     margin: 5px 0;
 }

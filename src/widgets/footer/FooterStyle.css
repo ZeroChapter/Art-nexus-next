@@ -143,4 +143,11 @@ hr {
     .information_blok {
         align-self: flex-start;
     }
+    .information_blok p {
+        white-space: normal;
+    }
+    .footer_end {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
 }
