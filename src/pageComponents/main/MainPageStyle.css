@@ -76,6 +76,20 @@
     h2 {
       letter-spacing: 1px;
       margin-top: 16px;
+      text-align: left;
+    }
+
+    p {
+      text-align: left;
+      margin: 0;
+      max-width: none;
+    }
+
+    ul {
+      text-align: left;
+      margin: 0;
+      max-width: none;
+      align-items: flex-start;
     }
   }
 }

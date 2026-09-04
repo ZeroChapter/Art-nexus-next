@@ -15,12 +15,14 @@ export const Baner = () => {
         />
       </div>
       <div className="baner_text">
-        <h2 className="baner_text-title">Доставка с примеркой по Москве</h2>
+        <h2 className="baner_text-title">
+          Доставка с&nbsp;примеркой по&nbsp;Москве
+        </h2>
         <div className="baner_text-content">
           <p className="baner_text-grey">*Стоимость доставки — бесплатно.</p>
           <p className="baner_text-description">
             Примеряйте, решайте, <br />
-            оставайтесь с тем, что действительно ваше.
+            оставайтесь с&nbsp;тем, что действительно ваше.
           </p>
         </div>
       </div>
