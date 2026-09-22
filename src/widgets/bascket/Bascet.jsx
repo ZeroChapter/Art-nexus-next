@@ -160,18 +160,18 @@ export const Bascket = () => {
                                     <label htmlFor="telegram" className='inputLabel'>TELEGRAM</label>
                                 </div>
                                 <div className="radio-button_group">
-                                    <div className='radio-lable_group'>
-                                        <input type="radio" id="delivery-cdek" name="radio" className='radio_button' value="cdek" checked={delivery === 'cdek'} onChange={handleDeliveryChenge} />
-                                        <label htmlFor="delivery-cdek" className="radio-label">СДЕК</label>
-                                    </div>
-                                    <div className='radio-lable_group'>
-                                        <input type="radio" id="delivery-yandex" name="radio" className='radio_button' value="yandex" checked={delivery === 'yandex'} onChange={handleDeliveryChenge} />
-                                        <label htmlFor="delivery-yandex" className="radio-label">Яндекс GO</label>
-                                    </div>
-                                    <div className='radio-lable_group'>
-                                        <input type="radio" id="delivery-self" name="radio" className='radio_button' value="self" checked={delivery === 'yandex'} onChange={handleDeliveryChenge} />
-                                        <label htmlFor="delivery-self" className="radio-label">Доставка с примеркой</label>
-                                    </div>
+                                    <label className='radio-lable_group'>
+                                        <input type="radio" name="radio" className='radio_button' value="cdek" checked={delivery === 'cdek'} onChange={handleDeliveryChenge} />
+                                        <span className="radio-label">СДЕК</span>
+                                    </label>
+                                    <label className='radio-lable_group'>
+                                        <input type="radio" name="radio" className='radio_button' value="yandex" checked={delivery === 'yandex'} onChange={handleDeliveryChenge} />
+                                        <span className="radio-label">Яндекс GO</span>
+                                    </label>
+                                    <label className='radio-lable_group'>
+                                        <input type="radio" name="radio" className='radio_button' value="self" checked={delivery === 'self'} onChange={handleDeliveryChenge} />
+                                        <span className="radio-label">Доставка с примеркой</span>
+                                    </label>
                                     <p className='message-box'>
                                         Заявки обрабатываются с 10:00 до 21:00 ежедневно.
                                         После оформления заказа на сайте с вами свяжется менеджер online для подтверждения заказа!
