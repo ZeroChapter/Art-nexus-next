@@ -23,10 +23,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const effectiveColor = selectedColor ?? colors?.[0] ?? null;
 
-  const colorStyle = {
-    backgroundColor: effectiveColor?.colorCode || "#ccc",
-  };
-
   const productPath = `/products/${encodeURIComponent(String(id))}`;
   const href = effectiveColor?.colorCode
     ? `${productPath}?color=${encodeURIComponent(effectiveColor.colorCode)}`
@@ -72,11 +68,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <h2 className="product-name" title={name}>
           {name}
         </h2>
-        <div className="color_container">
-          <div className="colorSquer" style={colorStyle}></div>+
-          {colors?.length || 0}
-        </div>
-        <p>{formatPrice(coast)}</p>
+        <p className="product-price">{formatPrice(coast)}</p>
       </div>
     </Link>
   );

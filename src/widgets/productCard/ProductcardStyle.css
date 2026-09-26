@@ -29,35 +29,39 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
 }
 
 .description_container {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 50px;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  row-gap: 4px;
   margin-top: 10px;
   width: 100%;
   min-width: 0;
   font-size: var(--size-12);
 }
 
-h2 {
-  font-weight: 400;
-  margin: 0;
-  padding: 0;
-  font-size: var(--size-12);
+.description_container .product-name {
+  grid-column: 1;
+  grid-row: 1;
 }
 
-p {
+.description_container .product-price {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 0;
+  padding: 0;
   font-size: var(--size-14);
   font-weight: 600;
-  margin: 5px 0;
-  padding: 0;
 }
 
 .product_card-image {
   width: 100%;
-  aspect-ratio: 245 / 328;
+  aspect-ratio: 235 / 371;
   height: auto;
   overflow: hidden;
   position: relative;
@@ -69,23 +73,6 @@ p {
   object-fit: cover;
   object-position: center;
   pointer-events: none;
-}
-
-.color_container {
-  display: flex;
-  justify-content: end;
-  flex-direction: row;
-  align-items: center;
-  font-weight: 400;
-}
-
-.colorSquer {
-  width: 10px;
-  height: 10px;
-  margin: 0 5px;
-  border: 1px solid #000000;
-  position: relative;
-  top: -1px;
 }
 
 .mew_lable {
@@ -106,25 +93,8 @@ p {
 }
 
 @media (max-width: 768px) {
-  .information {
-    flex-direction: column;
-  }
-  .color_container {
-    order: 1;
-    margin-top: 5px;
-    justify-content: start;
-  }
-  .description_container {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    width: 100%;
-  }
   .product-name {
     width: 100%;
-  }
-  .colorSquer {
-    margin-left: 0;
   }
 }
 
