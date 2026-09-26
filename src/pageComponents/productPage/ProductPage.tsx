@@ -8,6 +8,7 @@ import { ProductCard } from "@/widgets/productCard/ProductCard";
 import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
 import { useAppContext } from "@/shared/AppContextProvider";
 import { Product, ProductColor, ProductSize } from "@/entities/product/model/type";
+import { PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT } from "./productPageConfig";
 import './ProductPageStyle.css';
 
 const PopUp = dynamic(
@@ -36,6 +37,11 @@ interface ProductPageProps {
 }
 
 const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendations }) => {
+    const displayedRecommendations = recommendations.slice(
+        0,
+        PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT,
+    );
+
     const params = useParams<{ id: string }>();
     const id = params?.id;
     const router = useRouter();
@@ -176,8 +182,8 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendatio
 
             <section className="recomendation">
                 <div className="recomendation-cards" role="list">
-                    {recommendations.length > 0 ? (
-                        recommendations.map((card: Product, index: number) => (
+                    {displayedRecommendations.length > 0 ? (
+                        displayedRecommendations.map((card: Product, index: number) => (
                             <article key={card.id || index} role="listitem">
                                 <ProductCard {...card} />
                             </article>
