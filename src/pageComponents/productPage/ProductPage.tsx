@@ -222,8 +222,8 @@ const ProductPage: React.FC<ProductPageProps> = ({
 
             <section className="recomendation">
                 <div className="recomendation-cards" role="list">
-                    {recommendations.length > 0 ? (
-                        recommendations.map((card: Product, index: number) => (
+                    {displayedRecommendations.length > 0 ? (
+                        displayedRecommendations.map((card: Product, index: number) => (
                             <article key={card.id || index} role="listitem">
                                 <ProductCard {...card} />
                             </article>

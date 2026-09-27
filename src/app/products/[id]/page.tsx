@@ -1,6 +1,7 @@
 import { cache, Suspense } from 'react';
 import { Product } from "@/entities/product/model/type";
 import ProductPage from "@/pageComponents/productPage/ProductPage";
+import { PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT } from "@/pageComponents/productPage/productPageConfig";
 import { getProductById, getGoodsList } from "@/entities/product/api/getGoods";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
