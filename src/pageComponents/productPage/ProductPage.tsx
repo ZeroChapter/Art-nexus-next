@@ -10,6 +10,7 @@ import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
 import { useAppContext } from "@/shared/AppContextProvider";
 import { Product, ProductColor, ProductColorVariant, ProductSize } from "@/entities/product/model/type";
 import { normalizeColorCode } from "@/shared/lib/normalizeColorCode";
+import { PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT } from "./productPageConfig";
 import './ProductPageStyle.css';
 
 const PopUp = dynamic(
@@ -63,6 +64,10 @@ const ProductPage: React.FC<ProductPageProps> = ({
     const { addToBascet } = useAppContext();
 
     const product = initialProduct;
+
+    const displayedRecommendations = recommendations
+        .filter((item) => item.id !== product.id)
+        .slice(0, PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
