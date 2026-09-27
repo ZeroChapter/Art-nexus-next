@@ -1,9 +1,10 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import "./ProductcardStyle.css";
 import { formatPrice } from "@/shared/lib/formatPrice";
 import { Product, ProductColor } from "@/entities/product/model/type";
+import { getColorGalleryImages } from "./getColorGalleryImages";
+import { ProductCardImage } from "./ProductCardImage";
 
 interface ProductCardProps extends Product {
   isNew?: boolean;
@@ -32,16 +33,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     ? (colors ?? []).findIndex((c) => c.colorCode === effectiveColor.colorCode)
     : -1;
 
-  const previewImageByIndex =
-    effectiveColor && effectiveColor.imageIndex != null
-      ? image?.[Number(effectiveColor.imageIndex)]?.[0]
-      : undefined;
-
-  const previewImageByOrder =
-    colorIndexByOrder >= 0 ? image?.[colorIndexByOrder]?.[0] : undefined;
-
-  const previewImage =
-    previewImageByIndex ?? previewImageByOrder ?? image?.[0]?.[0];
+  const galleryImages = getColorGalleryImages(
+    image,
+    effectiveColor,
+    colorIndexByOrder,
+  );
 
   return (
     <Link
@@ -49,20 +45,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       className="product_card"
       aria-label={`${name}, цена ${formatPrice(coast)}`}
     >
-      <div className="product_card-image">
-        <div className={`mew_lable ${isNew ? "" : "hidden"}`}>NEW</div>
-        {previewImage ? (
-          <Image
-            src={previewImage}
-            alt={`${name} — дизайнерская одежда Art Nexus`}
-            fill
-            sizes="(max-width: 768px) 50vw, 245px"
-            style={{ objectFit: "cover", objectPosition: "center" }}
-            priority={priority}
-            loading={priority ? undefined : "lazy"}
-          />
-        ) : null}
-      </div>
+      <ProductCardImage
+        name={name}
+        galleryImages={galleryImages}
+        isNew={isNew}
+        priority={priority}
+      />
 
       <div className="description_container">
         <h2 className="product-name" title={name}>

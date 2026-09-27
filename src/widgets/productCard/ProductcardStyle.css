@@ -16,7 +16,13 @@
   cursor: pointer;
 }
 
-.product_card:hover .product_card-image img {
+.product_card-image--has-gallery img {
+  transform: none !important;
+}
+
+.product_card:hover
+  .product_card-image:not(.product_card-image--has-gallery)
+  img {
   transform: scale(1.05);
   transition: transform 0.3s ease;
 }
@@ -59,9 +65,13 @@
   font-weight: 600;
 }
 
+.size_string {
+  font-weight: 600;
+}
+
 .product_card-image {
   width: 100%;
-  aspect-ratio: 235 / 371;
+  aspect-ratio: 245 / 328;
   height: auto;
   overflow: hidden;
   position: relative;

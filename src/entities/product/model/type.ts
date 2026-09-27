@@ -5,6 +5,14 @@ export interface ProductColor {
     imageIndex: number;
 }
 
+/** Другой цвет того же товара (отдельная карточка в каталоге). */
+export interface ProductColorVariant {
+    productId: string;
+    colorCode: string;
+    colorName: string;
+    inStore: string;
+}
+
 export interface ProductSize {
     name: string;
     inStore: string;

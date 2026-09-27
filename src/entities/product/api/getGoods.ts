@@ -1,6 +1,6 @@
 import { CATALOG_REVALIDATE_SECONDS } from '@/shared/cacheConfig';
 import { SERVER_URL } from '@/shared/serverConfig';
-import { Product } from '@/entities/product/model/type';
+import { Product, ProductColorVariant } from '@/entities/product/model/type';
 
 export async function getGoodsList(): Promise<Product[]> {
   const res = await fetch(`${SERVER_URL}/api/goods/list`, {
@@ -17,6 +17,7 @@ export async function getGoodsList(): Promise<Product[]> {
 export interface ProductDetailResponse {
   product: Product;
   relatedProducts: Product[];
+  colorVariants: ProductColorVariant[];
 }
 
 function normalizeProductId(id: string): string {

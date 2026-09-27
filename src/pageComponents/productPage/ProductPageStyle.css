@@ -9,6 +9,10 @@ button {
   text-transform: none;
 }
 
+.product-page {
+  background-color: #f6f6f6;
+}
+
 .name_block {
   margin-bottom: 25px;
   display: flex;
@@ -31,13 +35,12 @@ button {
   display: flex;
   flex-direction: row;
   align-content: space-around;
-  max-width: 1140px;
+  max-width: 1220px;
   margin: 0 auto;
 }
 
 .left_block {
   grid-column: 1;
-  margin-left: -200px;
 }
 
 .collor_name {
@@ -53,7 +56,7 @@ button {
   grid-column: 2;
   align-self: start;
   margin-left: 80px;
-  margin-top: 100px;
+  margin-top: 63px;
   display: flex;
   flex-direction: column;
 }
@@ -70,6 +73,10 @@ button {
 .arrow_button:hover {
   cursor: pointer;
   color: var(--accent-color);
+}
+
+.product-price {
+  margin: 0;
 }
 
 .collors_button {
@@ -99,8 +106,8 @@ button {
 }
 
 .add_btn {
-  background-color: rgb(255, 255, 255);
-  border: 1px solid var(--accent-color);
+  background-color: #f6f6f6;
+  border: 2px solid var(--accent-color);
   color: var(--accent-color);
   width: 100%;
   padding: 17px;
@@ -195,18 +202,14 @@ button {
 }
 
 .paragraf {
-  text-transform: uppercase;
-  font-size: var(--size-14);
-  font-weight: 400;
-  line-height: 1.2rem;
-  white-space: pre-line;
+  min-width: 0;
 }
 
 .recomendation-cards {
   width: 100%;
-  max-width: 1040px;
+  max-width: 1220px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
   margin: 0 auto;
 }

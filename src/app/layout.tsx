@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./providers";
-import { HeaderComponent } from "@/widgets/header/HeaderComponent";
-import { HeaderMobile } from "@/widgets/headerMobile/HeaderMobile";
-import { Footer } from "@/widgets/footer/Footer";
+import { SiteShell } from "./SiteShell";
 import { getYandexMetrikaId, YandexMetrikaScript } from "./YandexMetrika";
 import { YandexMetrikaHits } from "./YandexMetrikaHits";
 import { Suspense } from "react"; // Импортируем Suspense
@@ -88,14 +86,7 @@ export default function RootLayout({
         </Suspense>
 
         <Providers>
-          <div className="headers-container">
-            <HeaderComponent />
-            <HeaderMobile />
-          </div>
-
-          <main className="app-content-wrapper">{children}</main>
-
-          <Footer />
+          <SiteShell>{children}</SiteShell>
         </Providers>
       </body>
     </html>
