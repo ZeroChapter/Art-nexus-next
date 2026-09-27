@@ -6,6 +6,7 @@ import { getProductById, getGoodsList } from "@/entities/product/api/getGoods";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
+import { markdownToPlain } from "@/shared/lib/markdownToPlain";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
 
@@ -38,7 +39,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   const url = `${SITE_URL}/products/${encodeURIComponent(id)}`;
-  const description = product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
+  const description = markdownToPlain(product.description || "")
+    || `Описание товара ${product.name} от бренда Art Nexus.`;
   const imageUrl = product.image?.[0]?.[0];
 
   const colorNames = (product.colors ?? [])
@@ -100,10 +102,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     notFound();
   }
 
-  const { product, relatedProducts } = data;
+  const { product, relatedProducts, colorVariants = [] } = data;
   const url = `${SITE_URL}/products/${encodeURIComponent(id)}`;
-  const description =
-    product.description || `Описание товара ${product.name} от бренда Art Nexus.`;
+  const description = markdownToPlain(product.description || "")
+    || `Описание товара ${product.name} от бренда Art Nexus.`;
   const images = (product.image ?? [])
     .map((variant: string[]) => variant?.[0])
     .filter(Boolean);
@@ -153,7 +155,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <Suspense fallback={null}>
         <ProductPage
           initialProduct={product}
-          recommendations={relatedProducts.slice(0, PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT)}
+          recommendations={relatedProducts}
+          colorVariants={colorVariants}
         />
       </Suspense>
     </>

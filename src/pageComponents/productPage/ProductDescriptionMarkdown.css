@@ -1,0 +1,81 @@
+.product-description-markdown .wmde-markdown {
+  font-size: var(--size-14);
+  line-height: 1.55;
+  font-weight: 200;
+  color: inherit;
+  background: transparent;
+  font-family: inherit;
+}
+
+.product-description-markdown .wmde-markdown p {
+  margin: 0 0 0.85rem;
+}
+
+.product-description-markdown .wmde-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.product-description-markdown .wmde-markdown strong,
+.product-description-markdown .wmde-markdown b {
+  font-weight: 400;
+}
+
+.product-description-markdown .wmde-markdown p > strong:only-child {
+  margin-top: 1.85rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  letter-spacing: 0.02em;
+}
+
+.product-description-markdown .wmde-markdown ul,
+.product-description-markdown .wmde-markdown ol {
+  margin: 0 0 0.85rem;
+}
+
+.product-description-markdown .wmde-markdown ul {
+  list-style-type: disc;
+  display: block;
+  padding-left: 1.15rem;
+}
+
+.product-description-markdown .wmde-markdown ol {
+  list-style-type: decimal;
+  display: block;
+  padding-left: 1.15rem;
+}
+
+.product-description-markdown .wmde-markdown li {
+  display: list-item;
+  margin: 0;
+  padding: 0;
+}
+
+.product-description-markdown .wmde-markdown li + li {
+  margin-top: 0;
+}
+
+.product-description-markdown .wmde-markdown li > p {
+  margin: 0;
+}
+
+.product-description-markdown .wmde-markdown li > p:last-child {
+  margin-bottom: 0;
+}
+
+.product-description-markdown .wmde-markdown h1,
+.product-description-markdown .wmde-markdown h2,
+.product-description-markdown .wmde-markdown h3,
+.product-description-markdown .wmde-markdown h4,
+.product-description-markdown .wmde-markdown h5,
+.product-description-markdown .wmde-markdown h6 {
+  font-size: var(--size-14);
+  font-weight: 400;
+  margin: 1.85rem 0 0.75rem;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+}
+
+.product-description-markdown .wmde-markdown code,
+.product-description-markdown .wmde-markdown pre {
+  font-size: inherit;
+}

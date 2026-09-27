@@ -1,14 +1,15 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from "react";
+import { ProductDescriptionMarkdown } from "./ProductDescriptionMarkdown";
 import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { formatPrice } from "@/shared/lib/formatPrice";
 import { ProductCard } from "@/widgets/productCard/ProductCard";
 import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
 import { useAppContext } from "@/shared/AppContextProvider";
-import { Product, ProductColor, ProductSize } from "@/entities/product/model/type";
-import { PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT } from "./productPageConfig";
+import { Product, ProductColor, ProductColorVariant, ProductSize } from "@/entities/product/model/type";
+import { normalizeColorCode } from "@/shared/lib/normalizeColorCode";
 import './ProductPageStyle.css';
 
 const PopUp = dynamic(
@@ -34,14 +35,14 @@ const CompoundMessage = dynamic(
 interface ProductPageProps {
     initialProduct: Product;
     recommendations: Product[];
+    colorVariants?: ProductColorVariant[];
 }
 
-const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendations }) => {
-    const displayedRecommendations = recommendations.slice(
-        0,
-        PRODUCT_RECOMMENDATIONS_DISPLAY_LIMIT,
-    );
-
+const ProductPage: React.FC<ProductPageProps> = ({
+    initialProduct,
+    recommendations,
+    colorVariants = [],
+}) => {
     const params = useParams<{ id: string }>();
     const id = params?.id;
     const router = useRouter();
@@ -79,6 +80,29 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendatio
     }, [product, requestedColorCode]);
 
     const { image, coast, name, size, colors, description } = product;
+
+    const colorOptions: ProductColorVariant[] =
+        colorVariants.length > 0
+            ? colorVariants
+            : (colors ?? []).map((color) => ({
+                  productId: String(product.id),
+                  colorCode: color.colorCode,
+                  colorName: color.colorName,
+                  inStore: color.inStore,
+              }));
+
+    const handleColorSelect = (option: ProductColorVariant) => {
+        if (option.productId !== String(product.id)) {
+            router.push(`/products/${encodeURIComponent(option.productId)}`);
+            return;
+        }
+
+        const match =
+            colors.find(
+                (c) => normalizeColorCode(c.colorCode) === normalizeColorCode(option.colorCode),
+            ) ?? null;
+        if (match) setActivColor(match);
+    };
 
     const formatSizeName = (name: string) => name.replace(/([a-z])([A-Z])/g, '$1 $2');
 
@@ -154,11 +178,25 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendatio
                         <hr />
                         <p className="collor_name">{activColor?.colorName || 'Цвет не выбран'}</p>
                         <div className="collors_button">
-                            {colors.map((item, index) => (
-                                <button key={index} style={{ backgroundColor: item.colorCode }}
-                                    className={`color_item ${item.colorCode === activColor?.colorCode ? 'activColor' : ''} ${item.inStore !== 'true' ? 'disable_color' : ''}`}
-                                    onClick={() => setActivColor(item)} disabled={item.inStore !== 'true'} />
-                            ))}
+                            {colorOptions.map((option) => {
+                                const isActive =
+                                    option.productId === String(product.id) &&
+                                    normalizeColorCode(option.colorCode) ===
+                                        normalizeColorCode(activColor?.colorCode);
+                                return (
+                                    <button
+                                        key={`${option.productId}-${option.colorCode}`}
+                                        type="button"
+                                        style={{ backgroundColor: option.colorCode }}
+                                        className={`color_item ${isActive ? "activColor" : ""} ${option.inStore !== "true" ? "disable_color" : ""}`}
+                                        title={option.colorName}
+                                        aria-label={option.colorName}
+                                        aria-current={isActive ? "true" : undefined}
+                                        onClick={() => handleColorSelect(option)}
+                                        disabled={option.inStore !== "true"}
+                                    />
+                                );
+                            })}
                         </div>
                         <div className="size_container">
                             <div>{renderSizeInfo(size)}</div>
@@ -174,7 +212,9 @@ const ProductPage: React.FC<ProductPageProps> = ({ initialProduct, recommendatio
                             <button onClick={() => { setMessageComponent(<CompoundMessage prop={product} />); setShowPopUp(true) }}>Состав и уход</button>
                             <button onClick={() => { setMessageComponent(<DeliveryMessage />); setShowPopUp(true) }}>Доставка</button>
                         </div>
-                        <p className="paragraf">{description}</p>
+                        <div className="paragraf">
+                            <ProductDescriptionMarkdown source={description || ""} />
+                        </div>
                         <h2 className="recomendation-title">Возможно, вас заинтересует</h2>
                     </section>
                 </section>

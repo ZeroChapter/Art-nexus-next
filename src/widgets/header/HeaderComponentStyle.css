@@ -72,7 +72,7 @@
     width: 100%;
 }
 
-ul {
+.main-navigation ul {
     display: flex;
     flex-direction: row;
     gap: 20px;
