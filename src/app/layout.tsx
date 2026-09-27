@@ -5,9 +5,8 @@ import { SiteShell } from "./SiteShell";
 import { getYandexMetrikaId, YandexMetrikaScript } from "./YandexMetrika";
 import { YandexMetrikaHits } from "./YandexMetrikaHits";
 import { Suspense } from "react"; // Импортируем Suspense
-import { PAGE_REVALIDATE_SECONDS } from "@/shared/cacheConfig";
-
-export const revalidate = PAGE_REVALIDATE_SECONDS;
+/** HTML не кешируется на CDN (см. shared/cacheConfig.ts). Значение — литерал для Next segment config. */
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://art-nexus.ru"),
