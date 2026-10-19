@@ -28,12 +28,14 @@ export function ProductCardImage({
   }, []);
 
   useEffect(() => {
-    if (!hasGallery) return;
+    // Prefetch only when hover gallery is available (desktop). On iPhone this
+    // would fire dozens of image requests and stall the tab.
+    if (!hoverGalleryEnabled || !hasGallery) return;
     galleryImages.slice(1).forEach((src) => {
       const img = new window.Image();
       img.src = src;
     });
-  }, [galleryImages, hasGallery]);
+  }, [galleryImages, hasGallery, hoverGalleryEnabled]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!hoverGalleryEnabled || !hasGallery) return;

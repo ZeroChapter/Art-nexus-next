@@ -31,7 +31,6 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
   initialSlides = [],
 }) => {
   const [slides] = useState<CarouselSlide[]>(initialSlides);
-  const [translateX, setTranslateX] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isPageVisible, setIsPageVisible] = useState<boolean>(true);
@@ -45,7 +44,11 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
   const dragRef = useRef({ startX: 0, startT: 0 });
   const rafRef = useRef<number>(0);
 
-  translateXRef.current = translateX;
+  const applyTranslate = useCallback((x: number) => {
+    translateXRef.current = x;
+    const track = trackRef.current;
+    if (track) track.style.transform = `translate3d(${x}px, 0, 0)`;
+  }, []);
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
@@ -76,14 +79,11 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  const updateSetWidth = useCallback(function measureSetWidth() {
+  const updateSetWidth = useCallback(() => {
     const el = trackRef.current;
-
-    if (!el || el.scrollWidth < 2) {
-      requestAnimationFrame(measureSetWidth);
-      return;
-    }
-    setWidthRef.current = el.scrollWidth / 2;
+    if (!el) return;
+    const width = el.scrollWidth / 2;
+    if (width >= 1) setWidthRef.current = width;
   }, []);
 
   useLayoutEffect(() => {
@@ -95,7 +95,23 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     updateSetWidth();
     const ro = new ResizeObserver(() => updateSetWidth());
     ro.observe(el);
-    return () => ro.disconnect();
+
+    // Retry a few frames while Next/Image lays out — never spin forever (iOS hang).
+    let attempts = 0;
+    let raf = 0;
+    const retry = () => {
+      updateSetWidth();
+      attempts += 1;
+      if (setWidthRef.current < 1 && attempts < 60) {
+        raf = requestAnimationFrame(retry);
+      }
+    };
+    raf = requestAnimationFrame(retry);
+
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+    };
   }, [updateSetWidth, slides.length]);
 
   useEffect(() => {
@@ -118,13 +134,13 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
           ? MOBILE_SCROLL_DURATION_MS
           : DESKTOP_SCROLL_DURATION_MS;
         const pxPerMs = w / duration;
-        setTranslateX((x) => wrapTranslate(x - pxPerMs * dt, w));
+        applyTranslate(wrapTranslate(translateXRef.current - pxPerMs * dt, w));
       }
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [isMobile, isPageVisible, isVisible, slides.length]);
+  }, [applyTranslate, isMobile, isPageVisible, isVisible, slides.length]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== undefined && e.button !== 0) return;
@@ -140,7 +156,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     if (!isDraggingRef.current) return;
     const w = setWidthRef.current;
     const dx = e.clientX - dragRef.current.startX;
-    setTranslateX(wrapTranslate(dragRef.current.startT + dx, w));
+    applyTranslate(wrapTranslate(dragRef.current.startT + dx, w));
   };
 
   const onPointerUp = (e: React.PointerEvent) => {
@@ -154,7 +170,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
 
   const renderSlides = (setIndex: 0 | 1) =>
     slides.map((slide, idx) => {
-      const isAboveFold = setIndex === 0 && idx < 3;
+      const isAboveFold = setIndex === 0 && idx === 0;
       const alt =
         slide.alt ||
         slide.title ||
@@ -189,7 +205,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
       <div
         ref={trackRef}
         className="carousel-container"
-        style={{ transform: `translate3d(${translateX}px, 0, 0)` }}
+        style={{ transform: "translate3d(0px, 0, 0)" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}

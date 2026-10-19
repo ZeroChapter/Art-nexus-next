@@ -35,7 +35,7 @@ export const MainPage = ({
     if (inStoreColors.length === 0) return [];
 
     return inStoreColors.map((color) => {
-      const priority = cardIndex < 8;
+      const priority = cardIndex < 2;
       cardIndex += 1;
       return (
         <ProductCard
