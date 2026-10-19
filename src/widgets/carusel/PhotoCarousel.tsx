@@ -11,9 +11,12 @@ import Image from "next/image";
 import "./PhotoCarouselStyle.css";
 import type { CarouselSlide } from "@/entities/carousel/api/getCarousel";
 
-const DESKTOP_SCROLL_DURATION_MS = 160_000;
-const MOBILE_SCROLL_DURATION_MS = 100_000;
+/** Время полного прохода одного набора слайдов (чем больше — тем медленнее). */
+const DESKTOP_SCROLL_DURATION_MS = 320_000;
+const MOBILE_SCROLL_DURATION_MS = 200_000;
 const MOBILE_BREAKPOINT = 768;
+/** Должен совпадать с `gap` в PhotoCarouselStyle.css */
+const TRACK_GAP_PX = 5;
 
 const wrapTranslate = (x: number, setWidth: number): number => {
   if (setWidth <= 0) return x;
@@ -31,6 +34,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
   initialSlides = [],
 }) => {
   const [slides] = useState<CarouselSlide[]>(initialSlides);
+  const [translateX, setTranslateX] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [isPageVisible, setIsPageVisible] = useState<boolean>(true);
@@ -44,11 +48,8 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
   const dragRef = useRef({ startX: 0, startT: 0 });
   const rafRef = useRef<number>(0);
 
-  const applyTranslate = useCallback((x: number) => {
-    translateXRef.current = x;
-    const track = trackRef.current;
-    if (track) track.style.transform = `translate3d(${x}px, 0, 0)`;
-  }, []);
+  translateXRef.current = translateX;
+  const slideCount = slides.length;
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
@@ -79,15 +80,27 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     return () => observer.disconnect();
   }, []);
 
+  /** Ширина одного набора = сумма первых N слайдов + gap (не scrollWidth/2 от lazy-копии). */
   const updateSetWidth = useCallback(() => {
     const el = trackRef.current;
-    if (!el) return;
-    const width = el.scrollWidth / 2;
-    if (width >= 1) setWidthRef.current = width;
-  }, []);
+    if (!el || slideCount === 0) return;
+
+    const children = el.children;
+    if (children.length < slideCount) return;
+
+    let width = 0;
+    for (let i = 0; i < slideCount; i++) {
+      width += (children[i] as HTMLElement).offsetWidth;
+    }
+    if (slideCount > 1) width += (slideCount - 1) * TRACK_GAP_PX;
+
+    if (Number.isFinite(width) && width >= 1) {
+      setWidthRef.current = width;
+    }
+  }, [slideCount]);
 
   useLayoutEffect(() => {
-    if (slides.length === 0) return;
+    if (slideCount === 0) return;
 
     const el = trackRef.current;
     if (!el) return;
@@ -96,13 +109,12 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     const ro = new ResizeObserver(() => updateSetWidth());
     ro.observe(el);
 
-    // Retry a few frames while Next/Image lays out — never spin forever (iOS hang).
     let attempts = 0;
     let raf = 0;
     const retry = () => {
       updateSetWidth();
       attempts += 1;
-      if (setWidthRef.current < 1 && attempts < 60) {
+      if (setWidthRef.current < 1 && attempts < 120) {
         raf = requestAnimationFrame(retry);
       }
     };
@@ -112,13 +124,15 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
       ro.disconnect();
       cancelAnimationFrame(raf);
     };
-  }, [updateSetWidth, slides.length]);
+  }, [updateSetWidth, slideCount]);
 
   useEffect(() => {
-    if (slides.length === 0) return;
+    if (slideCount === 0) return;
 
     let last = performance.now();
+    let active = true;
     const tick = (now: number) => {
+      if (!active) return;
       const dt = now - last;
       last = now;
       const w = setWidthRef.current;
@@ -134,13 +148,17 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
           ? MOBILE_SCROLL_DURATION_MS
           : DESKTOP_SCROLL_DURATION_MS;
         const pxPerMs = w / duration;
-        applyTranslate(wrapTranslate(translateXRef.current - pxPerMs * dt, w));
+        setTranslateX((x) => wrapTranslate(x - pxPerMs * dt, w));
       }
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [applyTranslate, isMobile, isPageVisible, isVisible, slides.length]);
+
+    return () => {
+      active = false;
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [isMobile, isPageVisible, isVisible, slideCount]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (e.button !== undefined && e.button !== 0) return;
@@ -156,7 +174,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     if (!isDraggingRef.current) return;
     const w = setWidthRef.current;
     const dx = e.clientX - dragRef.current.startX;
-    applyTranslate(wrapTranslate(dragRef.current.startT + dx, w));
+    setTranslateX(wrapTranslate(dragRef.current.startT + dx, w));
   };
 
   const onPointerUp = (e: React.PointerEvent) => {
@@ -166,11 +184,12 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
     isDraggingRef.current = false;
   };
 
-  if (slides.length === 0) return null;
+  if (slideCount === 0) return null;
 
   const renderSlides = (setIndex: 0 | 1) =>
     slides.map((slide, idx) => {
-      const isAboveFold = setIndex === 0 && idx === 0;
+      // Обе копии без lazy — иначе scrollWidth/ширина набора ломаются и лента «летит».
+      const isAboveFold = setIndex === 0 && idx < 2;
       const alt =
         slide.alt ||
         slide.title ||
@@ -185,8 +204,9 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
           className="carousel-image"
           draggable={false}
           priority={isAboveFold}
-          loading={isAboveFold ? undefined : "lazy"}
+          loading={setIndex === 0 ? "eager" : "lazy"}
           sizes="(max-width: 768px) 100vw, 600px"
+          onLoad={updateSetWidth}
         />
       );
     });
@@ -205,7 +225,7 @@ export const PhotoCarousel: React.FC<PhotoCarouselProps> = ({
       <div
         ref={trackRef}
         className="carousel-container"
-        style={{ transform: "translate3d(0px, 0, 0)" }}
+        style={{ transform: `translate3d(${translateX}px, 0, 0)` }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
