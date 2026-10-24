@@ -6,14 +6,14 @@ import Image from "next/image";
 interface ProductCardImageProps {
   name: string;
   galleryImages: string[];
-  isNew?: boolean;
+  onSale?: boolean;
   priority?: boolean;
 }
 
 export function ProductCardImage({
   name,
   galleryImages,
-  isNew,
+  onSale,
   priority = false,
 }: ProductCardImageProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -64,7 +64,7 @@ export function ProductCardImage({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={`mew_lable ${isNew ? "" : "hidden"}`}>NEW</div>
+      <div className={`sale_label ${onSale ? "" : "hidden"}`}>SALE</div>
       <Image
         src={displayImage}
         alt={`${name} — дизайнерская одежда Art Nexus${hasGallery ? `, фото ${activeIndex + 1}` : ""}`}

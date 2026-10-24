@@ -22,8 +22,11 @@ export interface Product {
     id: number | string;
     name: string;
     coast: number;
+    /** Цена по скидке; если задана и меньше coast — товар в SALE */
+    saleCoast?: number | null;
     description: string;
     image: string[][]; // Массив массивов путей к фото
     colors: ProductColor[];
     size: ProductSize[];
+    isNew?: boolean;
 }

@@ -5,6 +5,7 @@ import { ProductDescriptionMarkdown } from "./ProductDescriptionMarkdown";
 import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { formatPrice } from "@/shared/lib/formatPrice";
+import { getEffectivePrice, hasSalePrice } from "@/shared/lib/salePrice";
 import { ProductCard } from "@/widgets/productCard/ProductCard";
 import { PhotoGalerey } from "@/widgets/photoGalerey/PhotoGalerey";
 import { useAppContext } from "@/shared/AppContextProvider";
@@ -84,7 +85,9 @@ const ProductPage: React.FC<ProductPageProps> = ({
         queueMicrotask(() => setActivColor(match));
     }, [product, requestedColorCode]);
 
-    const { image, coast, name, size, colors, description } = product;
+    const { image, coast, saleCoast, name, size, colors, description } = product;
+    const onSale = hasSalePrice(coast, saleCoast);
+    const basketPrice = getEffectivePrice(coast, saleCoast);
 
     const colorOptions: ProductColorVariant[] =
         colorVariants.length > 0
@@ -149,7 +152,7 @@ const ProductPage: React.FC<ProductPageProps> = ({
     const attGoodsToBasket = () => {
         if (!activColor || !activSize) return;
         addToBascet({
-            id: product.id, name: product.name, price: coast,
+            id: product.id, name: product.name, price: basketPrice,
             selectedSize: activSize, selectedColor: activColor,
             image: image[colorImageIndex]?.[0] ?? image[0]?.[0] ?? '',
         });
@@ -163,6 +166,7 @@ const ProductPage: React.FC<ProductPageProps> = ({
                 </button>
 
                 <section className="left_block">
+                    {onSale ? <div className="product-sale-label">SALE</div> : null}
                     <PhotoGalerey
                         key={activColor?.colorCode}
                         productName={name}
@@ -178,7 +182,14 @@ const ProductPage: React.FC<ProductPageProps> = ({
                     <article className="content__information_block">
                         <header className="name_block">
                             <h1>{name}</h1>
-                            <p className="product-price">{formatPrice(coast)}</p>
+                            {onSale ? (
+                                <p className="product-price product-price--sale">
+                                    <span className="product-price__sale">{formatPrice(saleCoast)}</span>
+                                    <span className="product-price__old">{formatPrice(coast)}</span>
+                                </p>
+                            ) : (
+                                <p className="product-price">{formatPrice(coast)}</p>
+                            )}
                         </header>
                         <hr />
                         <p className="collor_name">{activColor?.colorName || 'Цвет не выбран'}</p>

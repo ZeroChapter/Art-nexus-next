@@ -65,6 +65,24 @@
   font-weight: 600;
 }
 
+.description_container .product-price--sale {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.description_container .product-price__sale {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.description_container .product-price__old {
+  color: #9e9e9e;
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
 .size_string {
   font-weight: 600;
 }
@@ -85,15 +103,16 @@
   pointer-events: none;
 }
 
-.mew_lable {
+.sale_label {
   position: absolute;
   top: 0;
   left: 0;
   display: inline-block;
   padding: 5px;
   font-size: var(--size-14);
-  font-weight: 500;
-  background-color: var(--accent-color);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background-color: #d32f2f;
   color: #ffffff;
   z-index: 5;
 }

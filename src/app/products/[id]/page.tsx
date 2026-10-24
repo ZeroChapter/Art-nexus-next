@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { breadcrumbListJsonLd } from "@/shared/seo/jsonLd";
 import { markdownToPlain } from "@/shared/lib/markdownToPlain";
+import { getEffectivePrice } from "@/shared/lib/salePrice";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://art-nexus.ru';
 
@@ -134,7 +135,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       '@type': 'Offer',
       url,
       priceCurrency: 'RUB',
-      price: product.coast,
+      price: getEffectivePrice(product.coast, product.saleCoast),
       availability,
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@type': 'Organization', name: 'Art Nexus' },

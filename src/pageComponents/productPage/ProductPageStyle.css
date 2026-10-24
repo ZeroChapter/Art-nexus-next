@@ -40,6 +40,7 @@ button {
 }
 
 .left_block {
+  position: relative;
   grid-column: 1;
 }
 
@@ -75,8 +76,40 @@ button {
   color: var(--accent-color);
 }
 
+.product-sale-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  padding: 6px 10px;
+  font-size: var(--size-14);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background-color: #d32f2f;
+  color: #ffffff;
+}
+
 .product-price {
   margin: 0;
+}
+
+.name_block .product-price--sale {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.name_block .product-price__sale {
+  color: #d32f2f;
+  font-weight: 700;
+}
+
+.name_block .product-price__old {
+  color: #9e9e9e;
+  font-size: 0.75em;
+  font-weight: 400;
+  text-decoration: line-through;
 }
 
 .collors_button {
